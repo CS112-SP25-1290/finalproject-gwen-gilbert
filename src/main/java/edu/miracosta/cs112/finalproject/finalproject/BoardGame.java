@@ -5,8 +5,8 @@ public abstract class BoardGame extends MiniGame {
     protected int numColumns;
     protected int numRows;
 
-    public static final int DEFAULT_NUM_COLUMNS = 5;
-    public static final int DEFAULT_NUM_ROWS = 4;
+    protected static final int DEFAULT_NUM_COLUMNS = 5;
+    protected static final int DEFAULT_NUM_ROWS = 4;
     protected static final String DEFAULT_TILE_VALUE = "";
 
     public String defaultTileValue;
