@@ -20,7 +20,7 @@ public class MainApplication extends Application {
     public void start(Stage stage) throws IOException {
         stage.setTitle("Application");
         MainApplication.wrapper = new StageWrapperBuilder();
-        MainApplication.chompGame = new ChompGameBuilder(event -> wrapper.setCenter(mainMenu)).build();
+        MainApplication.chompGame = new ChompGame().build();
         MainApplication.ticTacToe = new ChompGameBuilder(event -> wrapper.setCenter(mainMenu)).build();
 
         MainApplication.mainMenu = new MainStageBuilder(event -> stage.close()).build();

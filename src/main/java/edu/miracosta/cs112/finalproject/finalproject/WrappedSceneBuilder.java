@@ -17,6 +17,7 @@ public abstract class WrappedSceneBuilder implements Builder<Region> {
     public static final double PREFERRED_WIDTH = 150;
     public static final double PREFERRED_HEIGHT = 30;
 
+    public WrappedSceneBuilder() { }
     public WrappedSceneBuilder(EventHandler<ActionEvent> event) {
         onExitEvent = event;
     }

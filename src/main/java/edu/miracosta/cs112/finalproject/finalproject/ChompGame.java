@@ -24,11 +24,20 @@
 *********************************************/
 package edu.miracosta.cs112.finalproject.finalproject;
 
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+
 public class ChompGame extends BoardGame {
     public ChompGame(int columns, int rows) {
         super(columns, rows);
+        //this.StartMenuRegion = new WrappedSceneBuilder().build();
         defaultTileValue = "[ ]";
     }
+
     public ChompGame() {
         this(5, 4);
     }
@@ -190,5 +199,42 @@ public class ChompGame extends BoardGame {
         ConsoleUtils.printCentredBox("0: Play              | 1: Change Board");
         ConsoleUtils.printCentredBox("2: Change First Turn | 3: Exit        ");
         ConsoleUtils.printLine('=');
+    }
+
+    @Override
+    public Region build() {
+        return null;
+    }
+
+    @Override
+    protected Region buildStartMenu() {
+        Label label = new Label("Chomp!");
+        standardise(label);
+
+        Button button1 = new Button("Play");
+        standardise(button1);
+        button1.setOnAction(event -> play());
+
+        Button button2 = new Button("Change Starting Player");
+        standardise(button2);
+        button2.setOnAction(onExitEvent);
+
+        Button button3 = new Button("Change Board Size");
+        standardise(button3);
+        button3.setOnAction(onExitEvent);
+
+        Button button4 = new Button("Exit");
+        standardise(button4);
+        button4.setOnAction(onExitEvent);
+
+        HBox row1 = new HBox(button1, button2);
+        row1.setAlignment(Pos.CENTER);
+        HBox row2 = new HBox(button3, button4);
+        row2.setAlignment(Pos.CENTER);
+
+        VBox main = new VBox(label, row1, row2);
+        main.setAlignment(Pos.CENTER);
+        main.setSpacing(10);
+        return main;
     }
 }

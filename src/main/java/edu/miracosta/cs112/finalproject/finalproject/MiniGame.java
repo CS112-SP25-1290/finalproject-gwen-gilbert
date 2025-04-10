@@ -1,11 +1,17 @@
 package edu.miracosta.cs112.finalproject.finalproject;
 
+import javafx.scene.layout.Region;
+
 import java.util.Random;
 
-public abstract class MiniGame {
+public abstract class MiniGame extends WrappedSceneBuilder {
     protected Random Rand;
     protected int userWins;
     protected int computerWins;
+
+    protected Region StartMenuRegion;
+    protected Region GameRegion;
+
     protected boolean exitProgram = false;
     protected StartingPlayer firstTurnPlayer;
 
@@ -14,9 +20,11 @@ public abstract class MiniGame {
     public MiniGame()
     {
         Rand = new Random();
-        userWins = 0;
-        computerWins = 0;
+        userWins = computerWins = 0;
         firstTurnPlayer = DEFAULT_FIRST_PLAYER;
+        onExitEvent = event -> MainApplication.getWrapper().setCenter(MainApplication.getMainMenu());
+        StartMenuRegion = this.buildStartMenu();
+        GameRegion = this.build();
     }
 
     /**
@@ -25,7 +33,7 @@ public abstract class MiniGame {
     public void startProgram() {
         do {
             displayGameMenu();
-            exitProgram = handleGameMenu();
+            //exitProgram = handleGameMenu();
         }
         while (!exitProgram);
     }
@@ -34,7 +42,7 @@ public abstract class MiniGame {
      * Method for handling when the game is first opened, such as displaying a settings menu or other pre-game information.
      * @return True if the program should exit out of the loop.
      */
-    protected abstract boolean handleGameMenu();
+    protected abstract Region buildStartMenu();
     
     /**
      * Method that should contain the actual game logic.
