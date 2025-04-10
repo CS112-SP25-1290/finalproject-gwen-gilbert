@@ -3,13 +3,8 @@ package edu.miracosta.cs112.finalproject.finalproject;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 
 public abstract class WrappedSceneBuilder implements Builder<Region> {

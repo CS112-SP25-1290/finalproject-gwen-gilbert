@@ -213,7 +213,7 @@ public class ChompGame extends BoardGame {
 
         Button button1 = new Button("Play");
         standardise(button1);
-        button1.setOnAction(event -> play());
+        button1.setOnAction(event -> );
 
         Button button2 = new Button("Change Starting Player");
         standardise(button2);

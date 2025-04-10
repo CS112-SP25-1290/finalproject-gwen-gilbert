@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.util.HashMap;
 
+// delete this
 public class SceneController {
     public Scene scene;
     private HashMap<String, Pane> screenMap = new HashMap<>();

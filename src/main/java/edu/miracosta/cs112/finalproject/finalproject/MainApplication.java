@@ -32,17 +32,20 @@ public class MainApplication extends Application {
         stage.show();
     }
 
-    public static StageWrapperBuilder getWrapper() {
-        return wrapper;
-    }
+//    public static StageWrapperBuilder getWrapper() {
+//        return wrapper;
+//    }
     public static Region getMainMenu() {
         return mainMenu;
     }
-    public static Region getChompGame() {
-        return chompGame;
-    }
-    public static Region getTicTacToe() {
-        return ticTacToe;
+//    public static Region getChompGame() {
+//        return chompGame;
+//    }
+//    public static Region getTicTacToe() {
+//        return ticTacToe;
+//    }
+    public static void setActiveWindow(Region region) {
+        wrapper.setCenter(region);
     }
     public static void main(String[] args)
     {
