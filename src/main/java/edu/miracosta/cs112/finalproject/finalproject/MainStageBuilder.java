@@ -7,6 +7,9 @@ import javafx.scene.control.*;
 import javafx.util.*;
 import javafx.scene.layout.*;
 
+/**
+ * Builds the main Region that wraps all other scenes, used to streamline scene changes
+ */
 public class MainStageBuilder extends WrappedSceneBuilder {
     public MainStageBuilder(EventHandler<ActionEvent> event) {
         super(event);
@@ -19,11 +22,11 @@ public class MainStageBuilder extends WrappedSceneBuilder {
 
         Button button1 = new Button("Play Chomp");
         standardise(button1);
-        button1.setOnAction(event -> MainApplication.getWrapper().setCenter(MainApplication.getChompGame()));
+        button1.setOnAction(event -> SceneController.setActiveWindow(SceneController.getChompGame()));
 
         Button button2 = new Button("Play Tic-Tac-Toe");
         standardise(button2);
-        button2.setOnAction(event -> MainApplication.getWrapper().setCenter(MainApplication.getTicTacToe()));
+        button2.setOnAction(event -> SceneController.setActiveWindow(SceneController.getTicTacToe()));
 
         Button button3 = new Button("Play Nothing");
         standardise(button3);

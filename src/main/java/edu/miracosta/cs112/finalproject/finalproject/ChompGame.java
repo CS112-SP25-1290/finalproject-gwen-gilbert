@@ -27,6 +27,7 @@ package edu.miracosta.cs112.finalproject.finalproject;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -208,31 +209,27 @@ public class ChompGame extends BoardGame {
 
     @Override
     protected Region buildStartMenu() {
-        Label label = new Label("Chomp!");
-        standardise(label);
+        ImageView gameHeader = new ImageView();
 
         Button button1 = new Button("Play");
-        standardise(button1);
-        button1.setOnAction(event -> );
+        SceneUtils.initButton(button1, event -> play());
 
         Button button2 = new Button("Change Starting Player");
-        standardise(button2);
-        button2.setOnAction(onExitEvent);
+        SceneUtils.initButton(button2, onExitEvent);
 
-        Button button3 = new Button("Change Board Size");
-        standardise(button3);
-        button3.setOnAction(onExitEvent);
+        Button changeSizeButton = new Button("Change Board Size");
+        SceneUtils.initButton(changeSizeButton, ev -> ());
 
-        Button button4 = new Button("Exit");
-        standardise(button4);
-        button4.setOnAction(onExitEvent);
+        Button exitButton = new Button("Exit");
+        SceneUtils.initButton(exitButton, onExitEvent);
 
         HBox row1 = new HBox(button1, button2);
         row1.setAlignment(Pos.CENTER);
-        HBox row2 = new HBox(button3, button4);
+
+        HBox row2 = new HBox(changeSizeButton, exitButton);
         row2.setAlignment(Pos.CENTER);
 
-        VBox main = new VBox(label, row1, row2);
+        VBox main = new VBox(gameHeader, row1, row2);
         main.setAlignment(Pos.CENTER);
         main.setSpacing(10);
         return main;

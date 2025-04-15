@@ -9,16 +9,10 @@ import javafx.util.Builder;
 
 public abstract class WrappedSceneBuilder implements Builder<Region> {
     protected EventHandler<ActionEvent> onExitEvent;
-    public static final double PREFERRED_WIDTH = 150;
-    public static final double PREFERRED_HEIGHT = 30;
+
 
     public WrappedSceneBuilder() { }
     public WrappedSceneBuilder(EventHandler<ActionEvent> event) {
         onExitEvent = event;
-    }
-
-    public void standardise(Labeled button) {
-        button.setPrefSize(PREFERRED_WIDTH, PREFERRED_HEIGHT);
-        button.setAlignment(Pos.CENTER);
     }
 }

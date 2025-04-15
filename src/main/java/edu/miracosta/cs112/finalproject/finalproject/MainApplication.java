@@ -9,46 +9,15 @@ import java.awt.*;
 
 import java.io.IOException;
 public class MainApplication extends Application {
-
-    private static StageWrapperBuilder wrapper;
-    private static Region mainMenu;
-    private static Region chompGame;
-    private static Region ticTacToe;
-    //private static Region mainMenu;
-
     @Override
     public void start(Stage stage) throws IOException {
-        stage.setTitle("Application");
-        MainApplication.wrapper = new StageWrapperBuilder();
-        MainApplication.chompGame = new ChompGame().build();
-        MainApplication.ticTacToe = new ChompGameBuilder(event -> wrapper.setCenter(mainMenu)).build();
+        SceneController.init(stage);
+        SceneController.setActiveWindow(SceneController.getMainMenu());
 
-        MainApplication.mainMenu = new MainStageBuilder(event -> stage.close()).build();
-
-        stage.setScene(new Scene(MainApplication.wrapper.build(), 960, 720));
-
-        wrapper.setCenter(MainApplication.mainMenu);
-
+        stage.setTitle("Mini Game Collection");
+        stage.setScene(new Scene(SceneController.getWrapper().build(), 960, 720));
         stage.show();
     }
 
-//    public static StageWrapperBuilder getWrapper() {
-//        return wrapper;
-//    }
-    public static Region getMainMenu() {
-        return mainMenu;
-    }
-//    public static Region getChompGame() {
-//        return chompGame;
-//    }
-//    public static Region getTicTacToe() {
-//        return ticTacToe;
-//    }
-    public static void setActiveWindow(Region region) {
-        wrapper.setCenter(region);
-    }
-    public static void main(String[] args)
-    {
-        launch(args);
-    }
+    public static void main(String[] args)  { launch(args); }
 }

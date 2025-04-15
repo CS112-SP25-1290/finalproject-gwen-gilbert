@@ -1,8 +1,27 @@
 package edu.miracosta.cs112.finalproject.finalproject;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+
 import java.util.Scanner;
 
-public class ConsoleUtils {
+public class SceneUtils {
+    public static final double PREFERRED_LABELED_WIDTH = 150;
+    public static final double PREFERRED_LABELED_HEIGHT = 30;
+
+    public static void standardise(Labeled labelOrButton) {
+        labelOrButton.setPrefSize(PREFERRED_LABELED_WIDTH, PREFERRED_LABELED_HEIGHT);
+        labelOrButton.setAlignment(Pos.CENTER);
+    }
+
+    public static void initButton(Button button, EventHandler<ActionEvent> event) {
+        standardise(button);
+        button.setOnAction(event);
+    }
+
     public static Scanner scanner = new Scanner(System.in); // for user input
     public static final int FIXED_STR_LENGTH = 41; // standardised length for menus
 
@@ -133,25 +152,25 @@ public class ConsoleUtils {
      * @param maxVal int representing max acceptable value, inclusive
      * @return int from the given String
      */
-    public static int parseInt(String str, int minVal, int maxVal)
-    {
-        int retval;
-        try
-        {
-            retval = Integer.parseInt(str);
-            if (retval < minVal || retval > maxVal)
-            {
-                System.out.println(String.format("Value is out of bounds: Acceptable range is: [%d,%d] inclusive", minVal, maxVal));
-                return parseInt(ConsoleUtils.getInput(">> "), minVal, maxVal);
-            }
-            return retval;
-        }
-        catch (NumberFormatException e)
-        {
-            System.out.println("Input cannot be parsed. Please type an integer.");
-            return parseInt(ConsoleUtils.getInput(">> "), minVal, maxVal);
-        }
-    }
+//    public static int parseInt(String str, int minVal, int maxVal)
+//    {
+//        int retval;
+//        try
+//        {
+//            retval = Integer.parseInt(str);
+//            if (retval < minVal || retval > maxVal)
+//            {
+//                System.out.println(String.format("Value is out of bounds: Acceptable range is: [%d,%d] inclusive", minVal, maxVal));
+//                return parseInt(ConsoleUtils.getInput(">> "), minVal, maxVal);
+//            }
+//            return retval;
+//        }
+//        catch (NumberFormatException e)
+//        {
+//            System.out.println("Input cannot be parsed. Please type an integer.");
+//            return parseInt(ConsoleUtils.getInput(">> "), minVal, maxVal);
+//        }
+//    }
 
     /**
      * Gets user console input as an integer between [min, max]. Repeats until getting valid input.
@@ -160,11 +179,11 @@ public class ConsoleUtils {
      * @param max highest acceptable value
      * @return user input as an int
      */
-    public static int getInt(String prompt, int min, int max)
-    {
-        String str = getInput(prompt);
-        return parseInt(str, min, max);
-    }
+//    public static int getInt(String prompt, int min, int max)
+//    {
+//        String str = getInput(prompt);
+//        return parseInt(str, min, max);
+//    }
 
     /**
      * Gets user console input as an integer between [min, max]. Repeats until getting valid input.
@@ -172,9 +191,9 @@ public class ConsoleUtils {
      * @param max highest acceptable value
      * @return user input as an int
      */
-    public static int getInt(int min, int max)
-    {
-        String str = getInput();
-        return parseInt(str, min, max);
-    }
+//    public static int getInt(int min, int max)
+//    {
+//        String str = getInput();
+//        return parseInt(str, min, max);
+//    }
 }

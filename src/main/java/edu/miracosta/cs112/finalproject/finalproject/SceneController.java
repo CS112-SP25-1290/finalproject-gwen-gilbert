@@ -1,30 +1,33 @@
 package edu.miracosta.cs112.finalproject.finalproject;
 
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.util.HashMap;
-
-// delete this
 public class SceneController {
-    public Scene scene;
-    private HashMap<String, Pane> screenMap = new HashMap<>();
+    private static StageWrapperBuilder wrapper;
+    private static Region mainMenu;
+    private static Region chompGame;
+    private static Region ticTacToe;
 
-    public SceneController(Scene scene) {
-        this.scene = scene;
+    protected static StageWrapperBuilder getWrapper() { return wrapper; }
+    public static Region getMainMenu() {
+        return mainMenu;
+    }
+    public static Region getChompGame() { return chompGame; }
+    public static Region getTicTacToe() { return ticTacToe; }
+
+    protected static void init(Stage stage) {
+        wrapper = new StageWrapperBuilder();
+        chompGame = new ChompGame().build();
+        ticTacToe = new ChompGameBuilder(event -> wrapper.setCenter(mainMenu)).build();
+        mainMenu = new MainStageBuilder(event -> stage.close()).build();
     }
 
-    protected void addScreen(String name, Pane pane){
-        screenMap.put(name, pane);
-    }
-
-    protected void removeScreen(String name){
-        screenMap.remove(name);
-    }
-
-    protected void activate(String name){
-        scene.setRoot( screenMap.get(name) );
-    }
+    /**
+     * Changes the currently shown Region.
+     * @param region Region to switch to.
+     */
+    public static void setActiveWindow(Region region) { wrapper.setCenter(region); }
 }

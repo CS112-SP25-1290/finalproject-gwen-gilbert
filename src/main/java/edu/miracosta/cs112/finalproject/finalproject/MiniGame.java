@@ -7,14 +7,13 @@ import java.util.Random;
 public abstract class MiniGame extends WrappedSceneBuilder {
     protected Region StartMenuRegion;
     protected Region GameRegion;
-
+    protected Region ChangePlayerRegion;
 
     protected Random Rand;
     protected int userWins;
     protected int computerWins;
 
     protected StartingPlayer firstTurnPlayer;
-
     private static final StartingPlayer DEFAULT_FIRST_PLAYER = StartingPlayer.USER;
 
     public MiniGame()
@@ -22,24 +21,26 @@ public abstract class MiniGame extends WrappedSceneBuilder {
         Rand = new Random();
         userWins = computerWins = 0;
         firstTurnPlayer = DEFAULT_FIRST_PLAYER;
-        onExitEvent = event -> MainApplication.setActiveWindow(MainApplication.getMainMenu());
+        onExitEvent = event -> SceneController.setActiveWindow(SceneController.getMainMenu());
         StartMenuRegion = this.buildStartMenu();
         GameRegion = this.build();
+        ChangePlayerRegion = new ChangePlayerBuilder().build();
     }
 
     /**
-     * Main method for starting the minigame's program. Should be the ONLY method called by outside classes.
+     * Main method for starting the minigame. Should be the ONLY method called by outside classes.
      */
     public void startGame() {
-        MainApplication.setActiveWindow(GameRegion);
+        SceneController.setActiveWindow(this.GameRegion);
     }
 
-    public void setStartingPlayer() {
-        switch (firstTurnPlayer) {
-            case USER -> firstTurnPlayer = StartingPlayer.COMPUTER;
-            case COMPUTER -> firstTurnPlayer = StartingPlayer.RANDOM;
-            case RANDOM -> firstTurnPlayer = StartingPlayer.USER;
-        }
+    /**
+     * Method for returning to the start menu.
+     */
+    protected void returnToStartMenu() { SceneController.setActiveWindow(this.StartMenuRegion); }
+
+    protected void onChangePlayer() {
+        SceneController.setActiveWindow(ChangePlayerRegion);
     }
     /**
      * Build method for creating the StartMenuRegion.
@@ -52,6 +53,22 @@ public abstract class MiniGame extends WrappedSceneBuilder {
      */
     protected abstract void doGameLogic();
 
+    public class ChangePlayerBuilder extends WrappedSceneBuilder {
+        protected Region region;
+
+        @Override
+        public Region build() {
+            return null;
+        }
+
+        public void setStartingPlayer() {
+            switch (firstTurnPlayer) {
+                case USER -> firstTurnPlayer = StartingPlayer.COMPUTER;
+                case COMPUTER -> firstTurnPlayer = StartingPlayer.RANDOM;
+                case RANDOM -> firstTurnPlayer = StartingPlayer.USER;
+            }
+        }
+    }
     protected enum StartingPlayer {
         USER,
         COMPUTER,

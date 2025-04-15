@@ -1,9 +1,17 @@
 package edu.miracosta.cs112.finalproject.finalproject;
 
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+
 public abstract class BoardGame extends MiniGame {
     public BoardTile[][] board;
     protected int numColumns;
     protected int numRows;
+
+    protected Region ChangeBoardRegion;
 
     protected static final int DEFAULT_NUM_COLUMNS = 5;
     protected static final int DEFAULT_NUM_ROWS = 4;
@@ -12,6 +20,8 @@ public abstract class BoardGame extends MiniGame {
     public String defaultTileValue;
 
     public BoardGame(int columns, int rows) {
+        super();
+        ChangeBoardRegion = new ChangeBoardBuilder().build();
         numColumns = columns;
         numRows = rows;
         defaultTileValue = DEFAULT_TILE_VALUE;
@@ -55,7 +65,7 @@ public abstract class BoardGame extends MiniGame {
      * @param column Index for the tile's column.
      * @param row Index for the tile's row.
      * @return Board tile at the given position.
-     * @throws BoardTileNotFoundException
+     * @throws BoardTileNotFoundException Error for when the given BoardTile is not found
      */
     private BoardTile findBoardTile(int column, int row) throws BoardTileNotFoundException {
         if (board.length == 0) {
@@ -82,7 +92,6 @@ public abstract class BoardGame extends MiniGame {
      * @param column Index for the tile's column.
      * @param row Index for the tile's row.
      * @return Board tile at the given position.
-     * @throws BoardTileNotFoundException
      */
     protected BoardTile getBoardTile(int column, int row) {
         try {
@@ -135,17 +144,59 @@ public abstract class BoardGame extends MiniGame {
             }
             System.out.println();
         }
-        ConsoleUtils.printLine('=', 3 + 6 * numColumns); // size in proportion to board length
+        //ConsoleUtils.printLine('=', 3 + 6 * numColumns); // size in proportion to board length
     }
 
     protected abstract BoardTile playerSelectTile();
     protected abstract BoardTile computerSelectTile();
-    
+
+    /**
+     * Inner class that builds and controls the menu for changing the size of the board.
+     */
+    public class ChangeBoardBuilder extends WrappedSceneBuilder {
+        private Label boardSizeLabel;
+        private Label columnLabel;
+        private Label rowsLabel;
+
+        private static final String BOARD_SIZE_KEY = "%d x %d";
+        private static final String COLUMNS_PREFIX = "Current Num Columns: ";
+        private static final String ROWS_PREFIX = "Current Num Rows: ";
+        @Override
+        public Region build() {
+            Label header = new Label("Change Board Size");
+            SceneUtils.standardise(header);
+
+            boardSizeLabel = new Label();
+            SceneUtils.standardise(boardSizeLabel);
+            columnLabel = new Label();
+            SceneUtils.standardise(columnLabel);
+            rowsLabel = new Label();
+            SceneUtils.standardise(rowsLabel);
+
+            Button returnButton = new Button();
+            returnButton.setText("Return To Menu");
+            returnButton.setOnAction(ev -> returnToStartMenu());
+            SceneUtils.standardise(returnButton);
+
+            update();
+
+            VBox retval = new VBox(header, columnLabel, rowsLabel, returnButton);
+            retval.setAlignment(Pos.CENTER);
+            retval.setSpacing(10);
+            return retval;
+        }
+
+        public void update() {
+            this.boardSizeLabel.setText(String.format(BOARD_SIZE_KEY, getNumColumns(), getNumRows()));
+            this.columnLabel.setText(COLUMNS_PREFIX + getNumColumns());
+            this.rowsLabel.setText(ROWS_PREFIX + getNumRows());
+        }
+    }
+
     /** 
      * Inner class representing a tile on a game board
      */
-    public class BoardTile
-    {
+    public class BoardTile {
         public int column;
         public int row;
         public String tileValue;
@@ -215,7 +266,8 @@ public abstract class BoardGame extends MiniGame {
 
         @Override
         public String toString() {
-            return ConsoleUtils.centreString(String.valueOf(this.tileValue), 3);
+            return null;
+            //return ConsoleUtils.centreString(String.valueOf(this.tileValue), 3);
         }
 
         @Override
@@ -224,11 +276,9 @@ public abstract class BoardGame extends MiniGame {
                 return true;
             }
 
-            if (obj != null && obj instanceof BoardTile tile)
+            if (obj instanceof BoardTile tile)
             {
-                if (tile.getColumn() == this.column && tile.getRow() == this.row && tile.getTileValue().equals(this.tileValue)) {
-                    return true;
-                }
+                return tile.getColumn() == this.column && tile.getRow() == this.row && tile.getTileValue().equals(this.tileValue);
             }
             return false;
         }
