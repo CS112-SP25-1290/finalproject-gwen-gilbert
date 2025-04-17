@@ -1,12 +1,21 @@
-package edu.miracosta.cs112.finalproject.finalproject;
+package cs112.finalproject;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-public abstract class BoardGame extends MiniGame {
+import java.awt.event.ActionEvent;
+import java.util.Arrays;
+
+public abstract class BoardGameBuilder extends MiniGameBuilder {
     public BoardTile[][] board;
     protected int numColumns;
     protected int numRows;
@@ -19,14 +28,14 @@ public abstract class BoardGame extends MiniGame {
 
     public String defaultTileValue;
 
-    public BoardGame(int columns, int rows) {
+    public BoardGameBuilder(int columns, int rows) {
         super();
         ChangeBoardRegion = new ChangeBoardBuilder().build();
         numColumns = columns;
         numRows = rows;
         defaultTileValue = DEFAULT_TILE_VALUE;
     }
-    public BoardGame() {
+    public BoardGameBuilder() {
         this(DEFAULT_NUM_COLUMNS, DEFAULT_NUM_ROWS);
     }
 
@@ -150,10 +159,40 @@ public abstract class BoardGame extends MiniGame {
     protected abstract BoardTile playerSelectTile();
     protected abstract BoardTile computerSelectTile();
 
+    public void switchToStartMenu() { this.returnToStartMenu(); }
+    public void openTutorialPopup() {
+
+    }
+    public void openChangeBoardPopup() {
+
+    }
+
+    @Override
+    public Region buildStartMenu() {
+        Button playButton = SceneUtils.newButton("Start", ev -> startGame());
+        Button tutorialButton = SceneUtils.newButton("How to Play", ev -> openTutorialPopup());
+        Label currentFirstTurn = new Label("Current First Turn Player:");
+        ChoiceBox<StartingPlayer> chooseFirstTurn = new ChoiceBox<StartingPlayer>(FXCollections.observableList(Arrays.stream(StartingPlayer.values()).toList()));
+        chooseFirstTurn.setValue(firstTurnPlayer);
+        chooseFirstTurn.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number value, Number newValue) {
+                firstTurnPlayer = StartingPlayer.values()[newValue.intValue()];
+            }
+        });
+        Button changeBoardButton = SceneUtils.newButton("Change Board Size", ev -> openChangeBoardPopup());
+        Button exitButton = SceneUtils.newButton("Return To Main Menu", onExitEvent);
+
+        VBox retval = new VBox(playButton, tutorialButton, currentFirstTurn, chooseFirstTurn, exitButton);
+        retval.setAlignment(Pos.CENTER);
+        retval.setSpacing(10);
+        return retval;
+    }
+
     /**
      * Inner class that builds and controls the menu for changing the size of the board.
      */
-    public class ChangeBoardBuilder extends WrappedSceneBuilder {
+    public class ChangeBoardBuilder extends SceneBuilder {
         private Label boardSizeLabel;
         private Label columnLabel;
         private Label rowsLabel;
@@ -162,7 +201,7 @@ public abstract class BoardGame extends MiniGame {
         private static final String COLUMNS_PREFIX = "Current Num Columns: ";
         private static final String ROWS_PREFIX = "Current Num Rows: ";
         @Override
-        public Region build() {
+        public Region buildScene() {
             Label header = new Label("Change Board Size");
             SceneUtils.standardise(header);
 

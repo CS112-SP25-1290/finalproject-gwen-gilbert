@@ -1,4 +1,4 @@
-package edu.miracosta.cs112.finalproject.finalproject;
+package cs112.finalproject;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,9 +17,16 @@ public class SceneUtils {
         labelOrButton.setAlignment(Pos.CENTER);
     }
 
-    public static void initButton(Button button, EventHandler<ActionEvent> event) {
+    private static void initButton(Button button, EventHandler<ActionEvent> event) {
         standardise(button);
         button.setOnAction(event);
+    }
+
+    public static Button newButton(String label, EventHandler<ActionEvent> event) {
+        Button retval = new Button(label);
+        retval.setOnAction(event);
+        standardise(retval);
+        return retval;
     }
 
     public static Scanner scanner = new Scanner(System.in); // for user input

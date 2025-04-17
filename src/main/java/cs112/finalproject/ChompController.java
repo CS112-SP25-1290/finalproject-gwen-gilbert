@@ -1,4 +1,4 @@
-package edu.miracosta.cs112.finalproject.finalproject;
+package cs112.finalproject;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -11,22 +11,22 @@ public class ChompController {
     @FXML
     protected void onPlayChompClick() {
         ChompGame game = new ChompGame();
-        game.startProgram();
+        //game.startProgram();
     }
     @FXML
     protected void onChangePlayerClick() {
         ChompGame game = new ChompGame();
-        game.startProgram();
+        //game.startProgram();
     }
     @FXML
     protected void onChangeBoardClick() {
         ChompGame game = new ChompGame();
-        game.startProgram();
+        //game.startProgram();
     }
 
     @FXML
     protected void onExitClick() {
         ChompGame game = new ChompGame();
-        game.startProgram();
+        //game.startProgram();
     }
 }

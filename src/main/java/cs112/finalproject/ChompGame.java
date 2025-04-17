@@ -22,17 +22,16 @@
 *   printBoard() : void
 *   generateBoard() : void
 *********************************************/
-package edu.miracosta.cs112.finalproject.finalproject;
+package cs112.finalproject;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-public class ChompGame extends BoardGame {
+public class ChompGame extends BoardGameBuilder {
     public ChompGame(int columns, int rows) {
         super(columns, rows);
         //this.StartMenuRegion = new WrappedSceneBuilder().build();
@@ -43,40 +42,40 @@ public class ChompGame extends BoardGame {
         this(5, 4);
     }
 
-    @Override
-    protected boolean handleGameMenu() {
-        switch (ConsoleUtils.getInt(">> ", 0, 3)) {
-            case 0:
-                play();
-                break;
-            case 1:
-                numColumns = ConsoleUtils.getInt("How long should the board be (1, 10)? Default: 5 >> ", 1, 10);
-                numRows = ConsoleUtils.getInt("How tall should the board be (1, 10)? Default: 4 >> ", 1, 10);
-                break;
-            case 2:
-                System.out.println("Who should go first?");
-                System.out.println("0: User | 1: Computer | 2: Random");
-                switch (ConsoleUtils.getInt(">> ", 0, 2))
-                {
-                    case 0:
-                        firstTurnPlayer = StartingPlayer.USER;
-                        break;
-                    case 1:
-                        firstTurnPlayer = StartingPlayer.COMPUTER;
-                        break;
-                    case 2:
-                        firstTurnPlayer = StartingPlayer.RANDOM;
-                        break;
-                }
-                break;
-            case 3:
-                System.out.println("Bye-bye!");
-                return true;
-        }
-        return false;
-    }
+//    @Override
+//    protected boolean handleGameMenu() {
+//        switch (ConsoleUtils.getInt(">> ", 0, 3)) {
+//            case 0:
+//                play();
+//                break;
+//            case 1:
+//                numColumns = ConsoleUtils.getInt("How long should the board be (1, 10)? Default: 5 >> ", 1, 10);
+//                numRows = ConsoleUtils.getInt("How tall should the board be (1, 10)? Default: 4 >> ", 1, 10);
+//                break;
+//            case 2:
+//                System.out.println("Who should go first?");
+//                System.out.println("0: User | 1: Computer | 2: Random");
+//                switch (ConsoleUtils.getInt(">> ", 0, 2))
+//                {
+//                    case 0:
+//                        firstTurnPlayer = StartingPlayer.USER;
+//                        break;
+//                    case 1:
+//                        firstTurnPlayer = StartingPlayer.COMPUTER;
+//                        break;
+//                    case 2:
+//                        firstTurnPlayer = StartingPlayer.RANDOM;
+//                        break;
+//                }
+//                break;
+//            case 3:
+//                System.out.println("Bye-bye!");
+//                return true;
+//        }
+//        return false;
+//    }
 
-    @Override
+    //@Override
     protected void play()
     {
         boolean userTurn;
@@ -103,7 +102,7 @@ public class ChompGame extends BoardGame {
             else
             {
                 System.out.println("Computer's turn!");
-                ConsoleUtils.getInput("Press enter to continue");
+                //ConsoleUtils.getInput("Press enter to continue");
             }
             
             while (selection == null)
@@ -147,21 +146,22 @@ public class ChompGame extends BoardGame {
             System.out.println("You lost, womp womp!");
             computerWins++;
         }
-        ConsoleUtils.getInput("Press enter to continue");
+        //ConsoleUtils.getInput("Press enter to continue");
     }
     
     @Override
     protected BoardTile playerSelectTile() {
-        int colSelection = ConsoleUtils.getInt("What column do you want to select? >> ", 0, numColumns - 1);
-        int rowSelection = ConsoleUtils.getInt("What row do you want to select? >> ", 0, numRows - 1);
-        BoardTile retval = getBoardTile(colSelection, rowSelection);
-
-        if (retval != null && retval.getTileValue().equals(""))
-        {
-            System.out.println("That tile has already been eaten! Please select another!");
-            return null;
-        }
-        return retval;
+        return null;
+//        int colSelection = ConsoleUtils.getInt("What column do you want to select? >> ", 0, numColumns - 1);
+//        int rowSelection = ConsoleUtils.getInt("What row do you want to select? >> ", 0, numRows - 1);
+//        BoardTile retval = getBoardTile(colSelection, rowSelection);
+//
+//        if (retval != null && retval.getTileValue().equals(""))
+//        {
+//            System.out.println("That tile has already been eaten! Please select another!");
+//            return null;
+//        }
+//        return retval;
     }
 
     @Override
@@ -187,51 +187,28 @@ public class ChompGame extends BoardGame {
     /**
      * Prints game information to the console
      */
-    @Override
-    protected void displayGameMenu()
-    {
-        ConsoleUtils.printCentredBox("-*-*-*-*-*-*CHOMP*-*-*-*-*-*-");
-        ConsoleUtils.printLine('=');
-        ConsoleUtils.printCentredBox("Board Size: " + numColumns + " x " + numRows);
-        ConsoleUtils.printCentredBox("Who Goes First: " + firstTurnPlayer);
-        ConsoleUtils.printCentredBox("User Wins: " + userWins);
-        ConsoleUtils.printCentredBox("Computer Wins: " + computerWins);
-        ConsoleUtils.printLine('=');
-        ConsoleUtils.printCentredBox("0: Play              | 1: Change Board");
-        ConsoleUtils.printCentredBox("2: Change First Turn | 3: Exit        ");
-        ConsoleUtils.printLine('=');
-    }
+//    @Override
+//    protected void displayGameMenu()
+//    {
+//        ConsoleUtils.printCentredBox("-*-*-*-*-*-*CHOMP*-*-*-*-*-*-");
+//        ConsoleUtils.printLine('=');
+//        ConsoleUtils.printCentredBox("Board Size: " + numColumns + " x " + numRows);
+//        ConsoleUtils.printCentredBox("Who Goes First: " + firstTurnPlayer);
+//        ConsoleUtils.printCentredBox("User Wins: " + userWins);
+//        ConsoleUtils.printCentredBox("Computer Wins: " + computerWins);
+//        ConsoleUtils.printLine('=');
+//        ConsoleUtils.printCentredBox("0: Play              | 1: Change Board");
+//        ConsoleUtils.printCentredBox("2: Change First Turn | 3: Exit        ");
+//        ConsoleUtils.printLine('=');
+//    }
 
     @Override
-    public Region build() {
+    public Region buildScene() {
         return null;
     }
 
     @Override
-    protected Region buildStartMenu() {
-        ImageView gameHeader = new ImageView();
+    protected void doGameLogic() {
 
-        Button button1 = new Button("Play");
-        SceneUtils.initButton(button1, event -> play());
-
-        Button button2 = new Button("Change Starting Player");
-        SceneUtils.initButton(button2, onExitEvent);
-
-        Button changeSizeButton = new Button("Change Board Size");
-        SceneUtils.initButton(changeSizeButton, ev -> ());
-
-        Button exitButton = new Button("Exit");
-        SceneUtils.initButton(exitButton, onExitEvent);
-
-        HBox row1 = new HBox(button1, button2);
-        row1.setAlignment(Pos.CENTER);
-
-        HBox row2 = new HBox(changeSizeButton, exitButton);
-        row2.setAlignment(Pos.CENTER);
-
-        VBox main = new VBox(gameHeader, row1, row2);
-        main.setAlignment(Pos.CENTER);
-        main.setSpacing(10);
-        return main;
     }
 }

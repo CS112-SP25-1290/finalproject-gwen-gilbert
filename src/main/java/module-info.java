@@ -1,9 +1,10 @@
-module edu.miracosta.cs112.finalproject.finalproject {
+module cs112.finalproject.finalproject {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.desktop;
 
 
-    opens edu.miracosta.cs112.finalproject.finalproject to javafx.fxml;
-    exports edu.miracosta.cs112.finalproject.finalproject;
+    opens cs112.finalproject to javafx.fxml;
+    exports cs112.finalproject;
+    exports cs112.finalproject.controllers;
 }
