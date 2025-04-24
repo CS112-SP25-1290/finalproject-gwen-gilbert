@@ -1,13 +1,16 @@
 package cs112.finalproject;
 
+import cs112.finalproject.controllers.SceneController;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.util.Random;
 
 public abstract class MiniGameBuilder extends SceneBuilder {
+    protected Image headerImage;
     protected Region StartMenuRegion;
     protected Region ChangePlayerRegion;
 
@@ -33,8 +36,7 @@ public abstract class MiniGameBuilder extends SceneBuilder {
      * Main method for starting the minigame. Should be the ONLY method called by outside classes.
      */
     public void startGame() {
-        SceneController.setActiveWindow(this.SceneRegion);
-        doGameLogic();
+        SceneController.setActiveWindow(this.buildScene());
     }
 
     /**
@@ -50,12 +52,8 @@ public abstract class MiniGameBuilder extends SceneBuilder {
      * @return Region representing the start menu UI.
      */
     protected abstract Region buildStartMenu();
-    
-    /**
-     * Method that should contain the actual game logic.
-     */
-    protected abstract void doGameLogic();
 
+    public Image getHeaderImage() { return headerImage; }
     public class ChangePlayerBuilder extends SceneBuilder {
         @Override
         public Region buildScene() {

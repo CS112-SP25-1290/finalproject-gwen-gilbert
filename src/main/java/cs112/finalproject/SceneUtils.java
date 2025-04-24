@@ -12,6 +12,8 @@ public class SceneUtils {
     public static final double PREFERRED_LABELED_WIDTH = 150;
     public static final double PREFERRED_LABELED_HEIGHT = 30;
 
+    public static final String CHOMP_LOGO_PATH = "file:./src/main/resources/cs112/finalproject/chompLogo.png";
+
     public static void standardise(Labeled labelOrButton) {
         labelOrButton.setPrefSize(PREFERRED_LABELED_WIDTH, PREFERRED_LABELED_HEIGHT);
         labelOrButton.setAlignment(Pos.CENTER);

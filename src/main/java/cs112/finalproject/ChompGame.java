@@ -26,6 +26,8 @@ package cs112.finalproject;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -34,6 +36,7 @@ import javafx.scene.layout.VBox;
 public class ChompGame extends BoardGameBuilder {
     public ChompGame(int columns, int rows) {
         super(columns, rows);
+        headerImage = new Image(SceneUtils.CHOMP_LOGO_PATH);
         //this.StartMenuRegion = new WrappedSceneBuilder().build();
         defaultTileValue = "[ ]";
     }
@@ -41,39 +44,6 @@ public class ChompGame extends BoardGameBuilder {
     public ChompGame() {
         this(5, 4);
     }
-
-//    @Override
-//    protected boolean handleGameMenu() {
-//        switch (ConsoleUtils.getInt(">> ", 0, 3)) {
-//            case 0:
-//                play();
-//                break;
-//            case 1:
-//                numColumns = ConsoleUtils.getInt("How long should the board be (1, 10)? Default: 5 >> ", 1, 10);
-//                numRows = ConsoleUtils.getInt("How tall should the board be (1, 10)? Default: 4 >> ", 1, 10);
-//                break;
-//            case 2:
-//                System.out.println("Who should go first?");
-//                System.out.println("0: User | 1: Computer | 2: Random");
-//                switch (ConsoleUtils.getInt(">> ", 0, 2))
-//                {
-//                    case 0:
-//                        firstTurnPlayer = StartingPlayer.USER;
-//                        break;
-//                    case 1:
-//                        firstTurnPlayer = StartingPlayer.COMPUTER;
-//                        break;
-//                    case 2:
-//                        firstTurnPlayer = StartingPlayer.RANDOM;
-//                        break;
-//                }
-//                break;
-//            case 3:
-//                System.out.println("Bye-bye!");
-//                return true;
-//        }
-//        return false;
-//    }
 
     //@Override
     protected void play()
@@ -184,31 +154,26 @@ public class ChompGame extends BoardGameBuilder {
         board[0][0].setTileValue("[X]");
     }
 
-    /**
-     * Prints game information to the console
-     */
-//    @Override
-//    protected void displayGameMenu()
-//    {
-//        ConsoleUtils.printCentredBox("-*-*-*-*-*-*CHOMP*-*-*-*-*-*-");
-//        ConsoleUtils.printLine('=');
-//        ConsoleUtils.printCentredBox("Board Size: " + numColumns + " x " + numRows);
-//        ConsoleUtils.printCentredBox("Who Goes First: " + firstTurnPlayer);
-//        ConsoleUtils.printCentredBox("User Wins: " + userWins);
-//        ConsoleUtils.printCentredBox("Computer Wins: " + computerWins);
-//        ConsoleUtils.printLine('=');
-//        ConsoleUtils.printCentredBox("0: Play              | 1: Change Board");
-//        ConsoleUtils.printCentredBox("2: Change First Turn | 3: Exit        ");
-//        ConsoleUtils.printLine('=');
-//    }
-
     @Override
-    public Region buildScene() {
-        return null;
-    }
+    public Region buildScene() { // WIP
+        VBox retval = new VBox();
+        retval.setAlignment(Pos.CENTER);
+        HBox rowNums = new HBox();
+        retval.getChildren().add(rowNums);
+        rowNums.setAlignment(Pos.CENTER);
+        for (int i = 0; i < getNumRows(); i++) {
+            rowNums.getChildren().add(new Label("" + i)); // replace w/ better int-to-String thing
+        }
 
-    @Override
-    protected void doGameLogic() {
+        for (int i = 1; i < getNumColumns() + 1; i++) {
+            HBox column = new HBox(new Label("" + i));
+            column.setAlignment(Pos.CENTER);
+            for (int j = 0; j < getNumRows(); j++) {
+                column.getChildren().add(new Button("test"));
+            }
+            retval.getChildren().add(column);
+        }
 
+        return retval;
     }
 }

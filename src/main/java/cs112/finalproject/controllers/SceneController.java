@@ -1,8 +1,8 @@
-package cs112.finalproject;
+package cs112.finalproject.controllers;
 
-import cs112.finalproject.controllers.SceneWrapperController;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import cs112.finalproject.ApplicationWrapperBuilder;
+import cs112.finalproject.ChompGame;
+import cs112.finalproject.MainMenuBuilder;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
@@ -14,13 +14,13 @@ public class SceneController {
     private static ChompGame chompGame;
     private static Region ticTacToe;
 
-    protected static ApplicationWrapperBuilder getWrapper() { return wrapper; }
+    public static ApplicationWrapperBuilder getWrapper() { return wrapper; }
     public static void switchToMainMenu() {
-        //wrapper.setHeader(null);
+        wrapper.setHeader(null);
         SceneController.setActiveWindow(mainMenu.getSceneRegion());
     }
     public static void switchToChompGame() {
-        //wrapper.setHeader(null);
+        wrapper.setHeader(chompGame.getHeaderImage());
         chompGame.switchToStartMenu();
     }
     public static void switchToTicTacToe() {
@@ -28,7 +28,8 @@ public class SceneController {
         //SceneController.setActiveWindow(ticTacToe.getSceneRegion());
     }
 
-    protected static void init(Stage stage) throws IOException {
+    public static ChompGame getChompGame() { return chompGame; };
+    public static void init(Stage stage) throws IOException {
         wrapper = new ApplicationWrapperBuilder();
         chompGame = new ChompGame();
         //ticTacToe = new ChompGameBuilder(event -> SceneController.switchToMainMenu()).build();
