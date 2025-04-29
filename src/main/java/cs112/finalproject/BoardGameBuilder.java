@@ -147,11 +147,15 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
 
     @Override
     public Region buildStartMenu() {
+        VBox retval = SceneUtils.newVBox();
         Button playButton = SceneUtils.newButton("Start", ev -> startGame());
+        SceneUtils.bindSize(playButton, retval);
         Button tutorialButton = SceneUtils.newButton("How to Play", ev -> switchToTutorial());
-        Button exitButton = SceneUtils.newButton("Return To Main Menu", onExitEvent);
+        SceneUtils.bindSize(tutorialButton, retval);
+        Button exitButton = SceneUtils.newButton("Back To Main Menu", onExitEvent);
+        SceneUtils.bindSize(exitButton, retval, 0 ,12);
 
-        VBox retval = new VBox(playButton, tutorialButton, ChangePlayerRegion);
+        retval.getChildren().addAll(playButton, tutorialButton, ChangePlayerRegion);
         ChangeBoardRegion = buildBoardSizeRegion(retval);
         if (ChangeBoardRegion != null) {
             retval.getChildren().add(ChangeBoardRegion);
@@ -164,8 +168,10 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
     protected Region buildBoardSizeRegion(Region parent) {
         HBox box = new HBox();
         box.prefWidthProperty().bind(parent.widthProperty().divide(4));
-        Label label = new Label("Board Size: ");
-        Label label2 = new Label(" X ");
+        Label label = SceneUtils.newLabel("Board Size: ");
+        SceneUtils.bindSize(label, box, 0, 12);
+        Label label2 = SceneUtils.newLabel(" X ");
+        SceneUtils.bindSize(label2, box, 0, 12);
 
         // listener logic retrieved from:
         // https://stackoverflow.com/questions/7555564/what-is-the-recommended-way-to-make-a-numeric-textfield-in-javafx
@@ -201,6 +207,12 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
                 }
             }
         });
+
+        SceneUtils.bindFontSize(columnField);
+        SceneUtils.bindSize(columnField, box, 0, 12);
+        SceneUtils.bindFontSize(rowField);
+        SceneUtils.bindSize(rowField, box, 0, 12);
+
         box.getChildren().addAll(label, columnField, label2, rowField);
         box.setAlignment(Pos.CENTER);
         return box;

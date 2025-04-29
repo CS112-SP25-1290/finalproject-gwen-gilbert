@@ -42,6 +42,8 @@ public abstract class MiniGameBuilder extends SceneBuilder {
      */
     protected abstract Region buildStartMenu();
 
+    public Image getHeaderImage() { return headerImage; }
+
     /** Sets the active window to this minigame's game screen and initialises first turn data. */
     public void startGame() {
         SceneController.setActiveWindow(this.SceneRegion);
@@ -62,26 +64,28 @@ public abstract class MiniGameBuilder extends SceneBuilder {
 
     /** Sets the active window to this minigame's start menu screen. */
     public void switchToStartMenu() { SceneController.setActiveWindow(this.StartMenuRegion); }
+
     /** Sets the active window to this minigame's tutorial screen. */
     protected void switchToTutorial() { SceneController.setActiveWindow(this.TutorialRegion); }
 
-    public Image getHeaderImage() { return headerImage; }
-
     /** Constructs the nodes used to control which player goes first. */
     private Region buildChangePlayer() {
-        Label currentFirstTurn = new Label("Current First Turn Player: ");
+        HBox retval = new HBox();
+        Label currentFirstTurn = SceneUtils.newLabel("Current First Turn Player: ");
+        SceneUtils.bindSize(currentFirstTurn, retval, 0, 12);
+
         ChoiceBox<StartingPlayer> choiceBox = new ChoiceBox<StartingPlayer>();
-        choiceBox.getItems().add(StartingPlayer.USER);
-        choiceBox.getItems().add(StartingPlayer.COMPUTER);
-        choiceBox.getItems().add(StartingPlayer.RANDOM);
+        choiceBox.getItems().addAll(StartingPlayer.USER, StartingPlayer.COMPUTER,StartingPlayer.RANDOM);
         choiceBox.setValue(firstTurnPlayer);
+        SceneUtils.bindFontSize(choiceBox);
+        SceneUtils.bindSize(choiceBox, retval, 0, 12);
         choiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number value, Number newValue) {
                 firstTurnPlayer = StartingPlayer.values()[newValue.intValue()];
             }
         });
-        HBox retval = new HBox(currentFirstTurn, choiceBox);
+        retval.getChildren().addAll(currentFirstTurn, choiceBox);
         retval.setAlignment(Pos.CENTER);
         return retval;
     }

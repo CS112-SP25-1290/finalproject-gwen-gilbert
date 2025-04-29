@@ -25,22 +25,17 @@ public class ApplicationWrapperBuilder implements Builder<Region> {
 
         StackPane headerWrapper = new StackPane();
         headerWrapper.setStyle("-fx-background-color:lightgrey");
-        headerWrapper.prefWidthProperty().bind(pane.widthProperty());
-        headerWrapper.prefHeightProperty().bind(pane.heightProperty().divide(9));
-        header = new ImageView();
-        header.setCache(true);
-        header.setPreserveRatio(true);
+        SceneUtils.bindSize(headerWrapper, pane, 0, 9);
+
+        header = SceneUtils.newImageView(null);
         header.fitHeightProperty().bind(headerWrapper.prefHeightProperty());
         headerWrapper.getChildren().add(header);
 
         StackPane footerWrapper = new StackPane();
-        footerWrapper.prefWidthProperty().bind(pane.widthProperty());
-        footerWrapper.prefHeightProperty().bind(pane.heightProperty().divide(9));
+        SceneUtils.bindSize(footerWrapper, pane, 0, 12);
 
-        footer = new Label("Footer");
-        footer.prefWidthProperty().bind(footerWrapper.prefWidthProperty());
-        footer.prefHeightProperty().bind(footerWrapper.prefHeightProperty());
-        footer.setAlignment(Pos.CENTER);
+        footer = SceneUtils.newLabel("Footer");
+        SceneUtils.bindSizePref(footer, footerWrapper, 0, 0);
         footer.textAlignmentProperty().setValue(TextAlignment.CENTER);
         footerWrapper.getChildren().add(footer);
 

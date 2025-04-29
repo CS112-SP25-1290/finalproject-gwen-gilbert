@@ -18,28 +18,24 @@ public class MainMenuBuilder extends SceneBuilder {
 
     @Override
     public Region buildScene() {
-        VBox retval = new VBox();
-        retval.setAlignment(Pos.CENTER);
-        retval.setSpacing(10);
+        VBox retval = SceneUtils.newVBox();
 
         Button chompButton = SceneUtils.newButton(null, ev -> SceneController.switchToChompGame());
-        chompButton.prefHeightProperty().bind(retval.heightProperty().divide(9));
-        ImageView chompImage = new ImageView(SceneController.getChompGame().getHeaderImage());
-        chompImage.setCache(true);
+        SceneUtils.bindSize(chompButton, retval, 8, 8);
+        ImageView chompImage = SceneUtils.newImageView(SceneController.getChompGame().getHeaderImage());
         chompImage.fitHeightProperty().bind(chompButton.prefHeightProperty());
-        chompImage.setPreserveRatio(true);
         chompButton.setGraphic(chompImage);
 
-
         Button ticTacToeButton = SceneUtils.newButton(null, ev -> SceneController.switchToTicTacToe());
-        ticTacToeButton.prefHeightProperty().bind(retval.heightProperty().divide(9));
-//        ImageView ticTacToeImage = new ImageView(SceneController.getTicTacToe().getHeaderImage());
+        SceneUtils.bindSize(chompButton, retval, 8, 8);
+//        ImageView ticTacToeImage = SceneUtils.newImageView(SceneController.getTicTacToe().getHeaderImage());
 //        ticTacToeImage.setCache(true);
 //        ticTacToeImage.fitHeightProperty().bind(ticTacToeButton.prefHeightProperty());
 //        ticTacToeImage.setPreserveRatio(true);
 //        ticTacToeButton.setGraphic(ticTacToeImage);
 
         Button exitButton = SceneUtils.newButton("Quit", onExitEvent);
+        SceneUtils.bindSize(exitButton, retval);
 
         retval.getChildren().addAll(chompButton, ticTacToeButton, exitButton);
         return retval;
