@@ -24,6 +24,7 @@
 *********************************************/
 package cs112.finalproject;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -34,49 +35,63 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 public class ChompGame extends BoardGameBuilder {
+    private Image EMPTY_TILE;
+    private ImageView POISON_TILE;
     public ChompGame(int columns, int rows) {
         super(columns, rows);
         headerImage = new Image(SceneUtils.CHOMP_LOGO_PATH);
-        //this.StartMenuRegion = new WrappedSceneBuilder().build();
-        defaultTileValue = "[ ]";
+        DEFAULT_TILE_IMAGE = new Image(SceneUtils.CHOMP_TILE_FULL);
+        EMPTY_TILE = new Image(SceneUtils.CHOMP_TILE_EMPTY);
+        POISON_TILE = SceneUtils.newImageView(new Image(SceneUtils.CHOMP_TILE_POISON));
     }
 
     public ChompGame() {
         this(5, 4);
     }
-    
+
     @Override
-    protected BoardTile playerSelectTile() {
-        return null;
-//        int colSelection = ConsoleUtils.getInt("What column do you want to select? >> ", 0, numColumns - 1);
-//        int rowSelection = ConsoleUtils.getInt("What row do you want to select? >> ", 0, numRows - 1);
-//        BoardTile retval = getBoardTile(colSelection, rowSelection);
-//
-//        if (retval != null && retval.getTileValue().equals(""))
-//        {
-//            System.out.println("That tile has already been eaten! Please select another!");
-//            return null;
-//        }
-//        return retval;
+    protected void onPlayerSelectTile(BoardTile tile) {
+
     }
 
     @Override
-    protected BoardTile computerSelectTile() {
-        BoardTile retval = getBoardTile(Rand.nextInt(numColumns), Rand.nextInt(numRows));
-        if (retval != null && retval.getTileValue().equals(""))
-        {
-            return null;
+    protected boolean gameHasEnded() {
+        if (board[0][0].getTileValue() == -1) {
+            // since the game ends when one player loses on their turn, we invert the boolean
+            // since the base assumes a player wins on their turn
+            playerTurn = !playerTurn;
+            return true;
         }
-        return retval;
+        return false;
     }
+    @Override
+    protected void onTileSelected(BoardTile tile) {
+        int col = tile.getColumn();
+        int row = tile.getRow();
+
+        for (int i = col; i < numColumns; i++) {
+            for (int j = row; j < numRows; j++) {
+                board[i][j].getTile().setGraphic(SceneUtils.newImageView(EMPTY_TILE));
+                board[i][j].getTile().setDisable(true);
+                board[i][j].setTileValue(-1);
+            }
+        }
+
+        super.onTileSelected(tile);
+    }
+
+//    @Override
+//    protected void onComputerSelectTile() {
+//        super.onComputerSelectTile();
+//    }
 
     /**
      * Initialises and fills an int array representing the play board
      */
     @Override
-    protected void generateBoard()
-    {
+    protected void generateBoard() {
         super.generateBoard();
-        board[0][0].setTileValue("[X]");
+        board[0][0].setTileValue(2);
+        board[0][0].getTile().setGraphic(POISON_TILE);
     }
 }

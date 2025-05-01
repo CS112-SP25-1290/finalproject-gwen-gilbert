@@ -19,7 +19,7 @@ public abstract class SceneBuilder implements Builder<Region> {
     public SceneBuilder(EventHandler<ActionEvent> event) {
         this();
         this.onExitEvent = event;
-        this.SceneRegion = this.build();
+        this.build();
     }
 
     public Region getSceneRegion() { return SceneRegion; }
@@ -28,6 +28,6 @@ public abstract class SceneBuilder implements Builder<Region> {
 
     @Override
     public Region build() {
-        return buildScene();
+        return SceneRegion = buildScene();
     }
 }

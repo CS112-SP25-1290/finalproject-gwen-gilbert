@@ -4,6 +4,7 @@ import cs112.finalproject.controllers.SceneController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -18,7 +19,8 @@ public abstract class MiniGameBuilder extends SceneBuilder {
     protected Region StartMenuRegion;
     protected Region TutorialRegion;
     protected Region ChangePlayerRegion;
-
+    protected Label statsLabel;
+    protected Button endGameButton;
     protected Random Rand;
     protected int userWins;
     protected int computerWins;
@@ -45,25 +47,83 @@ public abstract class MiniGameBuilder extends SceneBuilder {
     public Image getHeaderImage() { return headerImage; }
 
     /** Sets the active window to this minigame's game screen and initialises first turn data. */
-    public void startGame() {
-        SceneController.setActiveWindow(this.SceneRegion);
-        if (firstTurnPlayer == StartingPlayer.RANDOM) {
-            playerTurn = this.Rand.nextBoolean();
-        }
-        else {
-            playerTurn = firstTurnPlayer == StartingPlayer.USER;
-        }
-
+    public void initialiseGame() {
+        playerTurn = (firstTurnPlayer == StartingPlayer.RANDOM ? this.Rand.nextBoolean() : firstTurnPlayer == StartingPlayer.USER);
+        SceneController.setActiveWindow(this.build());
         if (playerTurn) {
             SceneController.getWrapper().setFooter("You go first!");
         }
         else {
             SceneController.getWrapper().setFooter("L@@KER goes first!");
         }
+
+        startGame();
+    }
+    protected void startGame() {
+        if (playerTurn) {
+            onPlayerTurn();
+        }
+        else {
+            onComputerTurn();
+        }
+    }
+
+    /**
+     * Method that should be called when the minigame has ended.
+     * Iterates the win stats and lets the player return to the game's starting menu.
+     */
+    protected void endGame() {
+        if (playerTurn) {
+            userWins++;
+            SceneController.getWrapper().setFooter("You win!!!");
+        }
+        else {
+            computerWins++;
+            SceneController.getWrapper().setFooter("You lose, bwamp-bwamp!");
+        }
+        endGameButton.setVisible(true);
+        endGameButton.setDisable(false);
+    }
+
+    /**
+     * Determines whether the game has ended or not.
+     * @return Whether the game has ended or not.
+     */
+    protected abstract boolean gameHasEnded();
+    protected abstract void onPlayerTurn();
+    protected abstract void onComputerTurn();
+
+    protected void changePlayerTurn(boolean playerTurn) {
+        this.playerTurn = playerTurn;
+        if (playerTurn) {
+            SceneController.getWrapper().setFooter("Your turn!");
+            onPlayerTurn();
+        }
+        else {
+            SceneController.getWrapper().setFooter("L@@KER's turn!");
+            onComputerTurn();
+        }
+    }
+
+    /**
+     * Initialises the Button that will be displayed at the end of the minigame.
+     * MUST be called before endGame() is called.
+     * @param parent The Region to bind the endGameButton to.
+     */
+    protected void initialiseEndButton(Region parent) {
+        endGameButton = SceneUtils.newButton("Return to Start Menu", ev -> switchToStartMenu());
+        SceneUtils.bindSize(endGameButton, parent, 0, 12);
+        endGameButton.setDisable(true);
+        endGameButton.setVisible(false);
     }
 
     /** Sets the active window to this minigame's start menu screen. */
-    public void switchToStartMenu() { SceneController.setActiveWindow(this.StartMenuRegion); }
+    public void switchToStartMenu() {
+        SceneController.setActiveWindow(this.StartMenuRegion);
+        if (statsLabel != null) {
+            statsLabel.setText("Player wins: " + userWins + "\nComputer wins: " + computerWins);
+        }
+    }
 
     /** Sets the active window to this minigame's tutorial screen. */
     protected void switchToTutorial() { SceneController.setActiveWindow(this.TutorialRegion); }
