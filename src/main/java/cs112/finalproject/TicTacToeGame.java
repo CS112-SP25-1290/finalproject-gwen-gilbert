@@ -27,36 +27,30 @@ package cs112.finalproject;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class ChompGame extends BoardGameBuilder {
-    private Image EMPTY_TILE;
-    private ImageView POISON_TILE;
-    public ChompGame(int columns, int rows) {
+public class TicTacToeGame extends BoardGameBuilder {
+    private boolean lineCompleted;
+    private boolean playerIsX;
+    public TicTacToeGame(int columns, int rows) {
         super(columns, rows);
-        headerImage = new Image(SceneUtils.CHOMP_LOGO_PATH);
-        DEFAULT_TILE_IMAGE = new Image(SceneUtils.CHOMP_TILE_FULL);
-        EMPTY_TILE = new Image(SceneUtils.CHOMP_TILE_EMPTY);
-        POISON_TILE = SceneUtils.newImageView(new Image(SceneUtils.CHOMP_TILE_POISON));
+        headerImage = new Image(SceneUtils.TIC_TAC_TOE_LOGO_PATH);
     }
 
-    public ChompGame() {
-        this(5, 4);
+    public TicTacToeGame() {
+        this(3, 3);
     }
 
+    @Override
+    public void startGame() {
+        playerIsX = playerTurn;
+        super.startGame();
+    }
     @Override
     protected void onPlayerSelectTile(BoardTile tile) {
 
     }
 
     @Override
-    protected boolean gameHasEnded() {
-        if (board[0][0].getTileValue() == 1) {
-            // since the game ends when one player loses on their turn, we invert the boolean
-            // since the base assumes a player wins on their turn
-            playerTurn = !playerTurn;
-            return true;
-        }
-        return false;
-    }
+    protected boolean gameHasEnded() { return lineCompleted; }
     @Override
     protected void onTileSelected(BoardTile tile) {
         int col = tile.getColumn();
@@ -64,28 +58,16 @@ public class ChompGame extends BoardGameBuilder {
 
         for (int i = col; i < numColumns; i++) {
             for (int j = row; j < numRows; j++) {
-                board[i][j].getTile().setGraphic(SceneUtils.newImageView(EMPTY_TILE));
+                board[i][j].getTile().setText(playerTurn ? (playerIsX? "X" : "O") : (playerIsX? "O" : "X"));
                 board[i][j].getTile().setDisable(true);
-                board[i][j].setTileValue(1);
+                board[i][j].setTileValue(playerTurn ? 1 : 2);
             }
         }
 
         super.onTileSelected(tile);
     }
 
-    @Override
-    protected BoardTile onComputerSelectTile() {
-        BoardTile tile = super.onComputerSelectTile();
-        // visual indicator
-        return tile;
-    }
+    public void checkIfGameEnded() {
 
-    /**
-     * Initialises and fills an int array representing the play board
-     */
-    @Override
-    protected void generateBoard() {
-        super.generateBoard();
-        board[0][0].getTile().setGraphic(POISON_TILE);
     }
 }

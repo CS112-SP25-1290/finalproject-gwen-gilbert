@@ -16,6 +16,7 @@ import javafx.util.Builder;
 public class ApplicationWrapperBuilder implements Builder<Region> {
     public BorderPane pane;
     private ImageView header;
+    private Image gamesHeader;
     private Label footer;
     @Override
     public Region build() {
@@ -27,7 +28,7 @@ public class ApplicationWrapperBuilder implements Builder<Region> {
         headerWrapper.setStyle("-fx-background-color:lightgrey");
         SceneUtils.bindSize(headerWrapper, pane, 0, 9);
 
-        header = SceneUtils.newImageView(null);
+        header = SceneUtils.newImageView(gamesHeader = new Image(SceneUtils.GAMES_LOGO_PATH));
         header.fitHeightProperty().bind(headerWrapper.prefHeightProperty());
         headerWrapper.getChildren().add(header);
 
@@ -44,6 +45,7 @@ public class ApplicationWrapperBuilder implements Builder<Region> {
         return pane;
     }
 
+    public Image getGamesLogo() { return gamesHeader; }
     public void setHeader(Image image) { header.setImage(image); }
     public void setFooter(String text) { footer.setText(text); }
     public void setCenter(Node node) {

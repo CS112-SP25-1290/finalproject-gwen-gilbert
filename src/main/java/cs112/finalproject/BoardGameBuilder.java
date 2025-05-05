@@ -133,7 +133,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 BoardTile tile = getBoardTile(i, j);
-                if (tile != null && tile.getTileValue() != -1) {
+                if (tile != null && tile.getTileValue() == 0) {
                     selectableTiles.add(tile);
                 }
             }
@@ -288,13 +288,16 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         private int tileValue;
         private Button tile;
 
-        public BoardTile(int column, int row) {
+        public BoardTile(int column, int row, int tileValue) {
             this.column = column;
             this.row = row;
-            this.tileValue = 0;
+            this.tileValue = tileValue;
             this.tile = SceneUtils.newButton(null, ev -> onTileSelected(this));
             this.tile.setGraphic(SceneUtils.newImageView(DEFAULT_TILE_IMAGE));
             this.tile.setPadding(new Insets(-1, -1, -1, -1));
+        }
+        public BoardTile(int column, int row) {
+            this(column, row, 0);
         }
 
         /**

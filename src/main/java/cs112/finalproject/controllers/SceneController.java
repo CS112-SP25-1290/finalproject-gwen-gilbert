@@ -3,6 +3,7 @@ package cs112.finalproject.controllers;
 import cs112.finalproject.ApplicationWrapperBuilder;
 import cs112.finalproject.ChompGame;
 import cs112.finalproject.MainMenuBuilder;
+import cs112.finalproject.TicTacToeGame;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
@@ -12,11 +13,11 @@ public class SceneController {
     private static ApplicationWrapperBuilder wrapper;
     private static MainMenuBuilder mainMenu;
     private static ChompGame chompGame;
-    private static Region ticTacToe;
+    private static TicTacToeGame ticTacToe;
 
     public static ApplicationWrapperBuilder getWrapper() { return wrapper; }
     public static void switchToMainMenu() {
-        wrapper.setHeader(null);
+        wrapper.setHeader(wrapper.getGamesLogo());
         SceneController.setActiveWindow(mainMenu.getSceneRegion());
     }
     public static void switchToChompGame() {
@@ -24,15 +25,16 @@ public class SceneController {
         chompGame.switchToStartMenu();
     }
     public static void switchToTicTacToe() {
-        //wrapper.setHeader(null);
-        //SceneController.setActiveWindow(ticTacToe.getSceneRegion());
+        wrapper.setHeader(ticTacToe.getHeaderImage());
+        ticTacToe.switchToStartMenu();
     }
 
     public static ChompGame getChompGame() { return chompGame; };
-    public static void init(Stage stage) throws IOException {
+    public static TicTacToeGame getTicTacToe() { return ticTacToe; };
+    public static void init(Stage stage) {
         wrapper = new ApplicationWrapperBuilder();
         chompGame = new ChompGame();
-        //ticTacToe = new ChompGameBuilder(event -> SceneController.switchToMainMenu()).build();
+        ticTacToe = new TicTacToeGame();
         mainMenu = new MainMenuBuilder(event -> stage.close());
     }
 

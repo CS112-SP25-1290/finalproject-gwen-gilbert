@@ -27,12 +27,12 @@ public class MainMenuBuilder extends SceneBuilder {
         chompButton.setGraphic(chompImage);
 
         Button ticTacToeButton = SceneUtils.newButton(null, ev -> SceneController.switchToTicTacToe());
-        SceneUtils.bindSize(chompButton, retval, 8, 8);
-//        ImageView ticTacToeImage = SceneUtils.newImageView(SceneController.getTicTacToe().getHeaderImage());
-//        ticTacToeImage.setCache(true);
-//        ticTacToeImage.fitHeightProperty().bind(ticTacToeButton.prefHeightProperty());
-//        ticTacToeImage.setPreserveRatio(true);
-//        ticTacToeButton.setGraphic(ticTacToeImage);
+        SceneUtils.bindSize(ticTacToeButton, retval, 8, 8);
+        ImageView ticTacToeImage = SceneUtils.newImageView(SceneController.getTicTacToe().getHeaderImage());
+        ticTacToeImage.setCache(true);
+        ticTacToeImage.fitHeightProperty().bind(ticTacToeButton.prefHeightProperty());
+        ticTacToeImage.setPreserveRatio(true);
+        ticTacToeButton.setGraphic(ticTacToeImage);
 
         Button exitButton = SceneUtils.newButton("Quit", onExitEvent);
         SceneUtils.bindSize(exitButton, retval);

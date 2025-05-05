@@ -17,11 +17,11 @@ import javafx.scene.layout.VBox;
 import java.util.Scanner;
 
 public class SceneUtils {
+    public static final String GAMES_LOGO_PATH = "file:./src/main/resources/cs112/finalproject/gamesLogo.png";
     public static final String CHOMP_LOGO_PATH = "file:./src/main/resources/cs112/finalproject/chompLogo.png";
     public static final String CHOMP_TILE_FULL = "file:./src/main/resources/cs112/finalproject/chompTile_full.png";
     public static final String CHOMP_TILE_EMPTY = "file:./src/main/resources/cs112/finalproject/chompTile_empty.png";
     public static final String CHOMP_TILE_POISON = "file:./src/main/resources/cs112/finalproject/chompTile_poison.png";
-
     public static final String TIC_TAC_TOE_LOGO_PATH = "file:./src/main/resources/cs112/finalproject/ticTacToeLogo.png";
 
     /**
