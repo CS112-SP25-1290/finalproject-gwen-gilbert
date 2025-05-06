@@ -1,8 +1,6 @@
 package cs112.finalproject;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -10,11 +8,8 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-
-import java.util.Scanner;
 
 public class SceneUtils {
     public static final String GAMES_LOGO_PATH = "file:./src/main/resources/cs112/finalproject/gamesLogo.png";
@@ -34,12 +29,17 @@ public class SceneUtils {
     }
 
     /**
-     *
-     * @param node
+     * Binds the font size of the given node to a central standardised size.
+     * @param node The node whose font should scale.
      */
     public static void bindFontSize(Node node) {
         node.styleProperty().bind(Bindings.concat("-fx-font-size: ", MainApplication.fontSize));
     }
+
+    /**
+     * Creates a VBox objects with spacing 10 and centred alignment.
+     * @return The created VBox.
+     */
     public static VBox newVBox() {
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
