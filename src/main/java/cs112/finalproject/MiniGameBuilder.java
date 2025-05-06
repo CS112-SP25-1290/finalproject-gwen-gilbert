@@ -1,6 +1,8 @@
 package cs112.finalproject;
 
 import cs112.finalproject.controllers.SceneController;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
@@ -10,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 
 import java.util.Random;
 
@@ -22,8 +23,8 @@ public abstract class MiniGameBuilder extends SceneBuilder {
     protected Label statsLabel;
     protected Button endGameButton;
     protected Random Rand;
-    protected int userWins;
-    protected int computerWins;
+    protected IntegerProperty userWins;
+    protected IntegerProperty computerWins;
     protected boolean playerTurn;
     protected StartingPlayer firstTurnPlayer;
     private static final StartingPlayer DEFAULT_FIRST_PLAYER = StartingPlayer.USER;
@@ -31,7 +32,8 @@ public abstract class MiniGameBuilder extends SceneBuilder {
     public MiniGameBuilder() {
         super();
         Rand = new Random();
-        userWins = computerWins = 0;
+        userWins = new SimpleIntegerProperty(0);
+        computerWins = new SimpleIntegerProperty(0);
         firstTurnPlayer = DEFAULT_FIRST_PLAYER;
         onExitEvent = event -> SceneController.switchToMainMenu();
         ChangePlayerRegion = this.buildChangePlayer();
@@ -74,11 +76,11 @@ public abstract class MiniGameBuilder extends SceneBuilder {
      */
     protected void endGame() {
         if (playerTurn) {
-            userWins++;
+            userWins.setValue(userWins.getValue() + 1);
             SceneController.getWrapper().setFooter("You win!!!");
         }
         else {
-            computerWins++;
+            computerWins.setValue(computerWins.getValue() + 1);
             SceneController.getWrapper().setFooter("You lose, bwamp-bwamp!");
         }
         endGameButton.setVisible(true);
