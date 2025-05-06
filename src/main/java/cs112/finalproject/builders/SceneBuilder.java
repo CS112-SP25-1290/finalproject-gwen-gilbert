@@ -1,4 +1,4 @@
-package cs112.finalproject;
+package cs112.finalproject.builders;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

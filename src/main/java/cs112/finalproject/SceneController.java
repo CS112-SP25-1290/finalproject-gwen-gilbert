@@ -1,13 +1,11 @@
-package cs112.finalproject.controllers;
+package cs112.finalproject;
 
-import cs112.finalproject.ApplicationWrapperBuilder;
-import cs112.finalproject.ChompGame;
-import cs112.finalproject.MainMenuBuilder;
-import cs112.finalproject.TicTacToeGame;
+import cs112.finalproject.builders.ApplicationWrapperBuilder;
+import cs112.finalproject.builders.ChompGame;
+import cs112.finalproject.builders.MainMenuBuilder;
+import cs112.finalproject.builders.TicTacToeGame;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class SceneController {
     private static ApplicationWrapperBuilder wrapper;

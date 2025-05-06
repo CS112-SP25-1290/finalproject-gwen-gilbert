@@ -1,33 +1,25 @@
-package cs112.finalproject;
+package cs112.finalproject.builders;
 
-import cs112.finalproject.controllers.SceneController;
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import cs112.finalproject.BoardTileNotFoundException;
+import cs112.finalproject.SceneUtils;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public abstract class BoardGameBuilder extends MiniGameBuilder {
     public BoardTile[][] board;
-    protected int numColumns;
-    protected int numRows;
-    //protected Region ChangeBoardRegion;
+    private int numColumns;
+    private int numRows;
     protected HBox boardWrapper;
     private TextField columnField;
     private TextField rowField;
@@ -38,8 +30,10 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         if (!setNumColumns(columns) || !setNumRows(rows)) {
             numColumns = numRows = 3;
         }
-        columnField.setText(String.valueOf(getNumColumns()));
-        rowField.setText(String.valueOf(getNumRows()));
+        if (columnField != null) {
+            columnField.setText(String.valueOf(getNumColumns()));
+            rowField.setText(String.valueOf(getNumRows()));
+        }
     }
 
     public boolean setNumColumns(int columns) {
@@ -105,10 +99,10 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
     }
 
     private void disableBoardTiles(boolean disable) {
-        for (int i = 0; i < board.length; i++) {
+        for (BoardTile[] boardTiles : board) {
             for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j].getTileValue() != -1) {
-                    board[i][j].getTile().setDisable(disable);
+                if (boardTiles[j].getTileValue() == 0) {
+                    boardTiles[j].getTile().setDisable(disable);
                 }
             }
         }
@@ -116,19 +110,17 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
 
     protected void onTileSelected(BoardTile tile) {
         System.out.println(playerTurn + " " + tile.toString());
-        if (playerTurn) {
-            onPlayerSelectTile(tile);
-        }
 
-        // game has ended
         if (gameHasEnded()) {
+            disableBoardTiles(true);
             endGame();
         }
         else {
             changePlayerTurn(!playerTurn);
         }
     }
-    protected BoardTile onComputerSelectTile() {
+
+    protected ArrayList<BoardTile> getValidSelectableTiles() {
         ArrayList<BoardTile> selectableTiles = new ArrayList<>();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
@@ -138,13 +130,13 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
                 }
             }
         }
-        if (selectableTiles.size() > 1) {
-            selectableTiles.remove(0);
-        }
+        return selectableTiles;
+    }
 
+    private BoardTile onComputerSelectTile() {
+        ArrayList<BoardTile> selectableTiles = getValidSelectableTiles();
         return selectableTiles.get(this.Rand.nextInt(0, selectableTiles.size()));
     }
-    protected abstract void onPlayerSelectTile(BoardTile tile);
 
     /**
      * Retrieves a BoardTile in a given column and row position.
@@ -184,7 +176,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             return findBoardTile(column, row);
         }
         catch (BoardTileNotFoundException | IndexOutOfBoundsException e) {
-            System.out.println(e);
+            e.printStackTrace();
             return null;
         }
     }
@@ -204,6 +196,9 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
     public Region buildStartMenu() {
         VBox retval = SceneUtils.newVBox();
         Label stats = SceneUtils.newLabel("");
+        stats.setTextAlignment(TextAlignment.CENTER);
+        stats.textProperty().bind(Bindings.format("Player Wins: %d%nL@@KER Wins: %d%n", userWins, computerWins));
+        SceneUtils.bindSize(stats, retval);
 
         Button playButton = SceneUtils.newButton("Start", ev -> initialiseGame());
         SceneUtils.bindSize(playButton, retval);
@@ -212,12 +207,12 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         Button exitButton = SceneUtils.newButton("Back To Main Menu", onExitEvent);
         SceneUtils.bindSize(exitButton, retval, 0 ,12);
 
-        retval.getChildren().addAll(stats, playButton, tutorialButton, ChangePlayerRegion);
+        retval.getChildren().addAll(stats, ChangePlayerRegion);
         Region region = buildBoardSizeRegion(retval);
         if (region != null) {
             retval.getChildren().add(region);
         }
-        retval.getChildren().add(exitButton);
+        retval.getChildren().addAll(playButton, exitButton);
         retval.setAlignment(Pos.CENTER);
         retval.setSpacing(10);
         return retval;
@@ -228,7 +223,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
      * @param parent The parent container that this one will be bound to.
      * @return A Region representing the container.
      */
-    private Region buildBoardSizeRegion(Region parent) {
+    protected Region buildBoardSizeRegion(Region parent) {
         HBox box = new HBox();
         box.prefWidthProperty().bind(parent.widthProperty().divide(4));
         Label label = SceneUtils.newLabel("Board Size: ");
@@ -238,35 +233,29 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
 
         // listener logic retrieved from:
         // https://stackoverflow.com/questions/7555564/what-is-the-recommended-way-to-make-a-numeric-textfield-in-javafx
-        columnField = new TextField(String.valueOf(getNumColumns()));
+        columnField = new TextField();
         columnField.prefWidthProperty().bind(box.prefWidthProperty().divide(8));
-        columnField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    columnField.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-                else {
-                    int i = Integer.parseInt(newValue);
-                    if (i > 0 && i < 10) {
-                        setNumColumns(i);
-                    }
+        columnField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                columnField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+            else {
+                int i = Integer.parseInt(newValue);
+                if (i > 0 && i < 10) {
+                    setNumColumns(i);
                 }
             }
         });
         rowField = new TextField();
         rowField.prefWidthProperty().bind(box.prefWidthProperty().divide(8));
-        rowField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    rowField.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-                else {
-                    int i = Integer.parseInt(newValue);
-                    if (i > 0 && i < 10) {
-                        setNumRows(i);
-                    }
+        rowField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                rowField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+            else {
+                int i = Integer.parseInt(newValue);
+                if (i > 0 && i < 10) {
+                    setNumRows(i);
                 }
             }
         });
@@ -283,17 +272,23 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
 
     /** Inner class representing a tile on a game board */
     public class BoardTile {
-        private int column;
-        private int row;
+        private final int column;
+        private final int row;
         private int tileValue;
-        private Button tile;
+        private final Button tile;
 
         public BoardTile(int column, int row, int tileValue) {
             this.column = column;
             this.row = row;
             this.tileValue = tileValue;
             this.tile = SceneUtils.newButton(null, ev -> onTileSelected(this));
-            this.tile.setGraphic(SceneUtils.newImageView(DEFAULT_TILE_IMAGE));
+            if (DEFAULT_TILE_IMAGE != null) {
+                this.tile.setGraphic(SceneUtils.newImageView(DEFAULT_TILE_IMAGE));
+            }
+            else {
+                this.tile.setPrefSize(50, 50);
+                SceneUtils.bindSize(this.tile, boardWrapper);
+            }
             this.tile.setPadding(new Insets(-1, -1, -1, -1));
         }
         public BoardTile(int column, int row) {
@@ -341,8 +336,8 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
                 return true;
             }
 
-            if (obj instanceof BoardTile tile) {
-                return tile.getColumn() == this.column && tile.getRow() == this.row && tile.getTileValue() == this.tileValue;
+            if (obj instanceof BoardTile boardTile) {
+                return boardTile.getColumn() == this.column && boardTile.getRow() == this.row && boardTile.getTileValue() == this.tileValue;
             }
             return false;
         }

@@ -6,6 +6,6 @@ module cs112.finalproject.finalproject {
 
     opens cs112.finalproject to javafx.fxml;
     exports cs112.finalproject;
-    exports cs112.finalproject.controllers;
-    opens cs112.finalproject.controllers to javafx.fxml;
+    exports cs112.finalproject.builders;
+    opens cs112.finalproject.builders to javafx.fxml;
 }

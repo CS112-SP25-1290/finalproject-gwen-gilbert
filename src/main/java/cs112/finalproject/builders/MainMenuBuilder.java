@@ -1,9 +1,9 @@
-package cs112.finalproject;
+package cs112.finalproject.builders;
 
-import cs112.finalproject.controllers.SceneController;
+import cs112.finalproject.SceneController;
+import cs112.finalproject.SceneUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;

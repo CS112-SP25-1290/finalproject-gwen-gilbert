@@ -1,6 +1,7 @@
-package cs112.finalproject;
+package cs112.finalproject.builders;
 
-import cs112.finalproject.controllers.SceneController;
+import cs112.finalproject.SceneController;
+import cs112.finalproject.SceneUtils;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;

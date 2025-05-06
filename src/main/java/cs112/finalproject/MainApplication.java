@@ -1,7 +1,5 @@
 package cs112.finalproject;
-import cs112.finalproject.controllers.SceneController;
 import javafx.application.Application;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

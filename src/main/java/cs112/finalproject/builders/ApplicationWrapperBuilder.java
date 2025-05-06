@@ -1,5 +1,6 @@
-package cs112.finalproject;
+package cs112.finalproject.builders;
 
+import cs112.finalproject.SceneUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
