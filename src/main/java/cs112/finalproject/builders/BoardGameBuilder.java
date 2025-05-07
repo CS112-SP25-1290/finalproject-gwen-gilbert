@@ -24,15 +24,12 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
     private TextField columnField;
     private TextField rowField;
     protected Image DEFAULT_TILE_IMAGE;
-
+    private static final int MIN_NUM_COLUMNS_ROWS = 3;
+    private static final int MAX_NUM_COLUMNS_ROWS = 7;
     public BoardGameBuilder(int columns, int rows) {
         super();
         if (!setNumColumns(columns) || !setNumRows(rows)) {
-            numColumns = numRows = 3;
-        }
-        if (columnField != null) {
-            columnField.setText(String.valueOf(getNumColumns()));
-            rowField.setText(String.valueOf(getNumRows()));
+            numColumns = numRows = MIN_NUM_COLUMNS_ROWS;
         }
     }
 
@@ -108,8 +105,14 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         }
     }
 
+    private BoardTile onComputerSelectTile() {
+        //return getBoardTile(0, 1);
+        ArrayList<BoardTile> selectableTiles = getValidSelectableTiles();
+        return selectableTiles.get(this.Rand.nextInt(0, selectableTiles.size()));
+    }
+
     protected void onTileSelected(BoardTile tile) {
-        System.out.println(playerTurn + " " + tile.toString());
+        System.out.println("Player:" + playerTurn + " | " + tile.toString());
 
         if (gameHasEnded()) {
             disableBoardTiles(true);
@@ -131,11 +134,6 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             }
         }
         return selectableTiles;
-    }
-
-    private BoardTile onComputerSelectTile() {
-        ArrayList<BoardTile> selectableTiles = getValidSelectableTiles();
-        return selectableTiles.get(this.Rand.nextInt(0, selectableTiles.size()));
     }
 
     /**
@@ -193,6 +191,16 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
     }
 
     @Override
+    public void switchToStartMenu() {
+        if (columnField != null) {
+            columnField.setText(Integer.toString(getNumColumns()));
+        }
+        if (rowField != null) {
+            rowField.setText(Integer.toString(getNumRows()));
+        }
+        super.switchToStartMenu();
+    }
+    @Override
     public Region buildStartMenu() {
         VBox retval = SceneUtils.newVBox();
         Label stats = SceneUtils.newLabel("");
@@ -202,13 +210,11 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
 
         Button playButton = SceneUtils.newButton("Start", ev -> initialiseGame());
         SceneUtils.bindSize(playButton, retval);
-        Button tutorialButton = SceneUtils.newButton("How to Play", ev -> switchToTutorial());
-        SceneUtils.bindSize(tutorialButton, retval);
         Button exitButton = SceneUtils.newButton("Back To Main Menu", onExitEvent);
         SceneUtils.bindSize(exitButton, retval, 0 ,12);
 
         retval.getChildren().addAll(stats, ChangePlayerRegion);
-        Region region = buildBoardSizeRegion(retval);
+        Region region = buildBoardSizeRegion(retval, false);
         if (region != null) {
             retval.getChildren().add(region);
         }
@@ -223,49 +229,71 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
      * @param parent The parent container that this one will be bound to.
      * @return A Region representing the container.
      */
-    protected Region buildBoardSizeRegion(Region parent) {
+    protected Region buildBoardSizeRegion(Region parent, boolean forceSquareBoard) {
         HBox box = new HBox();
         box.prefWidthProperty().bind(parent.widthProperty().divide(4));
         Label label = SceneUtils.newLabel("Board Size: ");
         SceneUtils.bindSize(label, box, 0, 12);
-        Label label2 = SceneUtils.newLabel(" X ");
-        SceneUtils.bindSize(label2, box, 0, 12);
 
         // listener logic retrieved from:
         // https://stackoverflow.com/questions/7555564/what-is-the-recommended-way-to-make-a-numeric-textfield-in-javafx
         columnField = new TextField();
         columnField.prefWidthProperty().bind(box.prefWidthProperty().divide(8));
         columnField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                columnField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-            else {
+            try {
                 int i = Integer.parseInt(newValue);
-                if (i > 0 && i < 10) {
-                    setNumColumns(i);
+                if (i < MIN_NUM_COLUMNS_ROWS) {
+                    i = MIN_NUM_COLUMNS_ROWS;
+                    columnField.setText(Integer.toString(MIN_NUM_COLUMNS_ROWS));
                 }
-            }
-        });
-        rowField = new TextField();
-        rowField.prefWidthProperty().bind(box.prefWidthProperty().divide(8));
-        rowField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                rowField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-            else {
-                int i = Integer.parseInt(newValue);
-                if (i > 0 && i < 10) {
+                else if (i > MAX_NUM_COLUMNS_ROWS) {
+                    i = MAX_NUM_COLUMNS_ROWS;
+                    columnField.setText(Integer.toString(MAX_NUM_COLUMNS_ROWS));
+                }
+
+                setNumColumns(i);
+                if (forceSquareBoard) {
                     setNumRows(i);
                 }
             }
+            catch (NumberFormatException e) {
+                columnField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
         });
-
         SceneUtils.bindFontSize(columnField);
         SceneUtils.bindSize(columnField, box, 0, 12);
-        SceneUtils.bindFontSize(rowField);
-        SceneUtils.bindSize(rowField, box, 0, 12);
+        box.getChildren().addAll(label, columnField);
 
-        box.getChildren().addAll(label, columnField, label2, rowField);
+        if (!forceSquareBoard) {
+            Label label2 = SceneUtils.newLabel(" X ");
+            SceneUtils.bindSize(label2, box, 0, 12);
+
+            rowField = new TextField();
+            rowField.prefWidthProperty().bind(box.prefWidthProperty().divide(8));
+            rowField.textProperty().addListener((observable, oldValue, newValue) -> {
+                try {
+                    int i = Integer.parseInt(newValue);
+                    if (i < MIN_NUM_COLUMNS_ROWS) {
+                        i = MIN_NUM_COLUMNS_ROWS;
+                        rowField.setText(Integer.toString(MIN_NUM_COLUMNS_ROWS));
+                    }
+                    else if (i > MAX_NUM_COLUMNS_ROWS) {
+                        i = MAX_NUM_COLUMNS_ROWS;
+                        rowField.setText(Integer.toString(MAX_NUM_COLUMNS_ROWS));
+                    }
+                    setNumRows(i);
+                }
+                catch (NumberFormatException e) {
+                    rowField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            });
+
+            SceneUtils.bindFontSize(rowField);
+            SceneUtils.bindSize(rowField, box, 0, 12);
+
+            box.getChildren().addAll(label2, rowField);
+        }
+
         box.setAlignment(Pos.CENTER);
         return box;
     }
@@ -327,7 +355,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
 
         @Override
         public String toString() {
-            return String.format("BoardTile: row: %d, col: %d, value: %s", row, column, tileValue);
+            return String.format("BoardTile: column: %d, row: %d, value: %s", column, row, tileValue);
         }
 
         @Override
@@ -337,7 +365,9 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             }
 
             if (obj instanceof BoardTile boardTile) {
-                return boardTile.getColumn() == this.column && boardTile.getRow() == this.row && boardTile.getTileValue() == this.tileValue;
+                return boardTile.getColumn() == this.column
+                        && boardTile.getRow() == this.row
+                        && boardTile.getTileValue() == this.tileValue;
             }
             return false;
         }

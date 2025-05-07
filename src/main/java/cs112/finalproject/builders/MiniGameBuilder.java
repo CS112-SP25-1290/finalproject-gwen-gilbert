@@ -19,7 +19,6 @@ import java.util.Random;
 public abstract class MiniGameBuilder extends SceneBuilder {
     protected Image headerImage;
     protected Region StartMenuRegion;
-    protected Region TutorialRegion;
     protected Region ChangePlayerRegion;
     protected Label statsLabel;
     protected Button endGameButton;
@@ -127,9 +126,6 @@ public abstract class MiniGameBuilder extends SceneBuilder {
             statsLabel.setText("Player wins: " + userWins + "\nComputer wins: " + computerWins);
         }
     }
-
-    /** Sets the active window to this minigame's tutorial screen. */
-    protected void switchToTutorial() { SceneController.setActiveWindow(this.TutorialRegion); }
 
     /** Constructs the nodes used to control which player goes first. */
     private Region buildChangePlayer() {
