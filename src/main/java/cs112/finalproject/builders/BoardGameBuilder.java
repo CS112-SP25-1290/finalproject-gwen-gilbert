@@ -189,7 +189,6 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         retval.getChildren().addAll(boardWrapper, endGameButton);
         return retval;
     }
-
     @Override
     public void switchToStartMenu() {
         if (columnField != null) {
@@ -302,6 +301,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
     public class BoardTile {
         private final int column;
         private final int row;
+        private final BoardTilePosition position;
         private int tileValue;
         private final Button tile;
 
@@ -309,6 +309,17 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             this.column = column;
             this.row = row;
             this.tileValue = tileValue;
+            boolean firstOrLastColumn = (column == 0 || column == getNumColumns() - 1);
+            boolean firstOrLastRow = (row == 0 || row == getNumRows() - 1);
+            if (firstOrLastColumn && firstOrLastRow) {
+                position = BoardTilePosition.CORNER;
+            }
+            else if (firstOrLastColumn || firstOrLastRow) {
+                position = BoardTilePosition.EDGE;
+            }
+            else {
+                position = BoardTilePosition.BODY;
+            }
             this.tile = SceneUtils.newButton(null, ev -> onTileSelected(this));
             if (DEFAULT_TILE_IMAGE != null) {
                 this.tile.setGraphic(SceneUtils.newImageView(DEFAULT_TILE_IMAGE));
@@ -352,7 +363,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             return this.tileValue;
         }
         public Button getTile() { return this.tile; }
-
+        public BoardTilePosition getTilePosition() { return this.position; }
         @Override
         public String toString() {
             return String.format("BoardTile: column: %d, row: %d, value: %s", column, row, tileValue);
@@ -370,6 +381,11 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
                         && boardTile.getTileValue() == this.tileValue;
             }
             return false;
+        }
+        public enum BoardTilePosition {
+            CORNER,
+            EDGE,
+            BODY
         }
     }
 }

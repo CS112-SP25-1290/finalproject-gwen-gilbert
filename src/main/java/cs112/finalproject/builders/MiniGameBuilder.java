@@ -26,6 +26,7 @@ public abstract class MiniGameBuilder extends SceneBuilder {
     protected IntegerProperty userWins;
     protected IntegerProperty computerWins;
     protected boolean playerTurn;
+    protected boolean gameHasTied;
     protected StartingPlayer firstTurnPlayer;
     private static final StartingPlayer DEFAULT_FIRST_PLAYER = StartingPlayer.USER;
 
@@ -50,6 +51,7 @@ public abstract class MiniGameBuilder extends SceneBuilder {
 
     /** Sets the active window to this minigame's game screen and initialises first turn data. */
     public void initialiseGame() {
+        gameHasTied = false;
         playerTurn = (firstTurnPlayer == StartingPlayer.RANDOM ? this.Rand.nextBoolean() : firstTurnPlayer == StartingPlayer.USER);
         SceneController.setActiveWindow(this.build());
         if (playerTurn) {
@@ -75,9 +77,12 @@ public abstract class MiniGameBuilder extends SceneBuilder {
      * Iterates the win stats and lets the player return to the game's starting menu.
      */
     protected void endGame() {
-        if (playerTurn) {
+        if (gameHasTied) {
+            SceneController.getWrapper().setFooter("Tie! Everyone loses !!!");
+        }
+        else if (playerTurn) {
             userWins.setValue(userWins.getValue() + 1);
-            SceneController.getWrapper().setFooter("You win!!!");
+            SceneController.getWrapper().setFooter("You win !!!");
         }
         else {
             computerWins.setValue(computerWins.getValue() + 1);
