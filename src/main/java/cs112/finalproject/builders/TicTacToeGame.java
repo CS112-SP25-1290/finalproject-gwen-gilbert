@@ -10,7 +10,10 @@ import javafx.scene.layout.Region;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class TicTacToeGame extends BoardGameBuilder {
     private boolean playerIsX;
@@ -59,7 +62,7 @@ public class TicTacToeGame extends BoardGameBuilder {
         tile.setTileValue(currentTurnValue);
         movesLeft--;
         if (!lineCompleted) {
-            lineCompleted = checkTile(tile, true);
+            lineCompleted = (checkTile(tile, true) == 1);
         }
         if (movesLeft == 0 && !lineCompleted) {
             gameHasTied = true;
@@ -69,32 +72,46 @@ public class TicTacToeGame extends BoardGameBuilder {
     @Override
     protected ArrayList<BoardTile> getValidSelectableTiles() {
         ArrayList<BoardTile> selectableTiles = super.getValidSelectableTiles();
-        selectableTiles.removeIf(x -> checkTile(x, false));
-        for (int i = 0; i < selectableTiles.size(); i++) {
-            if (selectableTiles.get(i).getTileValue() == currentTurnValue) {
-                selectableTiles.removeIf(x -> x.getTileValue() != currentTurnValue);
-                return selectableTiles; // if the computer can win, guarantee it
+        ArrayList<BoardTile> cacheSelectableTiles = new ArrayList<>();
+        ArrayList<Integer> validationValues = new ArrayList<>();
+        for (BoardTile tile : selectableTiles) {
+            int i = checkTile(tile, false);
+            if (i != 0) {
+                validationValues.add(i);
             }
         }
-        // random chance to play smart
-        if (Rand.nextBoolean()) {
 
+        // if any selectable spaces can complete a line
+        if (validationValues.contains(1) || validationValues.contains(2)) {
+            boolean computerCanWin = validationValues.contains(2);
+            for (int i = 0; i < validationValues.size(); i++) {
+                int val = validationValues.get(i);
+                if (val != 0) {
+                    if (computerCanWin && val != currentTurnValue) {
+                        continue;
+                    }
+                    cacheSelectableTiles.add(selectableTiles.get(i));
+                }
+            }
+            return cacheSelectableTiles;
         }
+
+        System.out.println("Default random: " + selectableTiles.size());
         return selectableTiles;
     }
 
-    private boolean checkTile(BoardTile selectedTile, boolean checkForCompletedLine) {
+    private int checkTile(BoardTile selectedTile, boolean checkForCompletedLine) {
         switch (selectedTile.getTilePosition()) {
             case CORNER -> {
-                System.out.println("CORNER");
+                //System.out.println("CORNER");
                 return verifyCornerTile(selectedTile.getColumn(), selectedTile.getRow(), checkForCompletedLine);
             }
             case EDGE -> {
-                System.out.println("EDGE");
+                //System.out.println("EDGE");
                 return verifyEdgeTile(selectedTile.getColumn(), selectedTile.getRow(), checkForCompletedLine);
             }
             default -> {
-                System.out.println("BODY");
+                //System.out.println("BODY");
                 return verifyBodyTile(selectedTile.getColumn(), selectedTile.getRow(), checkForCompletedLine);
             }
         }
@@ -119,6 +136,7 @@ public class TicTacToeGame extends BoardGameBuilder {
         else { // start with the top-right tile
             getTilesDiagonalRecursive(false, getNumColumns() - 1, 0);
         }
+        //System.out.println("getDiag: " + GET_TILES_CACHE.size());
     }
     /**
      * A recursive method that checks individual BoardTiles to see if they make up a valid diagonal line.
@@ -128,7 +146,6 @@ public class TicTacToeGame extends BoardGameBuilder {
      * @return The value of containsCheckingTile if all necessary BoardTiles have been verified, or false if there aren't enough tiles or one isn't valid.
      */
     private boolean getTilesDiagonalRecursive(boolean fromLeft, int col, int row) {
-
         if (GET_TILES_CACHE.size() == getNumColumns()) {
             return true;
         }
@@ -148,7 +165,7 @@ public class TicTacToeGame extends BoardGameBuilder {
      * @param checkForCompletedLine If true, checks if there is a row consisting of valid tiles.
      * @return True if a complete valid line is present.
      */
-    private boolean verifyStraight(boolean horizontal, int colOrRow, boolean checkForCompletedLine) {
+    private int verifyStraight(boolean horizontal, int colOrRow, boolean checkForCompletedLine) {
         getTilesStraight(horizontal, colOrRow);
         return verifyLine(checkForCompletedLine);
     }
@@ -160,10 +177,10 @@ public class TicTacToeGame extends BoardGameBuilder {
      * @param checkForCompletedLine If true, checks if there is a row consisting of valid tiles.
      * @return True if a valid diagonal line is present.
      */
-    private boolean verifyDiagonal(boolean fromLeft, BoardTile selectedTile, boolean checkForCompletedLine) {
+    private int verifyDiagonal(boolean fromLeft, BoardTile selectedTile, boolean checkForCompletedLine) {
         getTilesDiagonal(fromLeft);
         if (!GET_TILES_CACHE.contains(selectedTile)) {
-            return false;
+            return 0;
         }
         return verifyLine(checkForCompletedLine);
     }
@@ -176,9 +193,10 @@ public class TicTacToeGame extends BoardGameBuilder {
      * @param checkForCompletedLine If true, checks if there is a row consisting of valid tiles.
      * @return True if the current BoardTile is part of a valid vertical or horizontal line.
      */
-    private boolean verifyEdgeTile(int col, int row, boolean checkForCompletedLine) {
-        if (verifyStraight(true, row, checkForCompletedLine)) {
-            return true;
+    private int verifyEdgeTile(int col, int row, boolean checkForCompletedLine) {
+        int n = verifyStraight(true, row, checkForCompletedLine);
+        if (n != 0) {
+            return n;
         }
         return verifyStraight(false, col, checkForCompletedLine);
     }
@@ -191,9 +209,10 @@ public class TicTacToeGame extends BoardGameBuilder {
      * @param checkForCompletedLine If true, checks if there is a row consisting of valid tiles.
      * @return True if the current BoardTile is part of a valid line.
      */
-    private boolean verifyCornerTile(int col, int row, boolean checkForCompletedLine) {
-        if (verifyEdgeTile(col, row, checkForCompletedLine)) {
-            return true;
+    private int verifyCornerTile(int col, int row, boolean checkForCompletedLine) {
+        int n = verifyEdgeTile(col, row, checkForCompletedLine);
+        if (n != 0) {
+            return n;
         }
 
         BoardTile tile = getBoardTile(col, row);
@@ -207,19 +226,23 @@ public class TicTacToeGame extends BoardGameBuilder {
      * @param checkForCompletedLine If true, checks if there is a row consisting of valid tiles.
      * @return True if the current BoardTile is part of a valid line.
      */
-    private boolean verifyBodyTile(int col, int row, boolean checkForCompletedLine) {
-        if (verifyEdgeTile(col, row, checkForCompletedLine)) {
-            return true;
+    private int verifyBodyTile(int col, int row, boolean checkForCompletedLine) {
+        int n = verifyEdgeTile(col, row, checkForCompletedLine);
+        if (n != 0) {
+            return n;
         }
 
         BoardTile tile = getBoardTile(col, row);
-        if (col == row && verifyDiagonal(true, tile, checkForCompletedLine)) {
-            return true;
+        if (col == row) {
+            n = verifyDiagonal(true, tile, checkForCompletedLine);
+            if (n != 0) {
+                return n;
+            }
         }
         if (col + row == getNumColumns() - 1) {
             return verifyDiagonal(false, tile, checkForCompletedLine);
         }
-        return false;
+        return 0;
     }
 
     /**
@@ -227,28 +250,26 @@ public class TicTacToeGame extends BoardGameBuilder {
      * @param checkForCompletedLine If true, checks if there is a row consisting of valid tiles. Otherwise, checks if the given line is one tile away from being complete
      * @return True if the current cache of tiles is valid.
      */
-    private boolean verifyLine(boolean checkForCompletedLine) {
+    private int verifyLine(boolean checkForCompletedLine) {
+
+        // checking if the game should end
+        // the tiles cache must be full of tiles matching the current turn value
         if (checkForCompletedLine) {
-            return !GET_TILES_CACHE.removeIf(x -> x.getTileValue() != currentTurnValue);
+            return !GET_TILES_CACHE.removeIf(x -> x.getTileValue() != currentTurnValue) ? 1 : 0;
         }
 
-        GET_TILES_PLAYER_CACHE.clear();
-        GET_TILES_PLAYER_CACHE.addAll(GET_TILES_CACHE);
+        // if there is one empty space
+        if (GET_TILES_CACHE.removeIf(x -> x.getTileValue() == 0)
+                && GET_TILES_CACHE.size() == getNumColumns() - 1) {
 
-        GET_TILES_CACHE.removeIf(x -> x.getTileValue() == 1); // remove user tiles
-        GET_TILES_PLAYER_CACHE.removeIf(x -> x.getTileValue() == 2); // remove computer tiles
-
-        // if tile row is all computer or empty tiles
-        if (GET_TILES_CACHE.size() == getNumColumns()) {
-            GET_TILES_CACHE.removeIf(x -> x.getTileValue() != 0); // leave only empty tiles
-            return GET_TILES_CACHE.size() == 1; // valid if the opponent can win by playing this tile
+            // return if all the occupied tiles belong to the same player
+            if (GET_TILES_CACHE.stream().allMatch(x -> x.getTileValue() == 1)) {
+                return currentTurnValue == 1 ? 2 : 1;
+            }
+            if (GET_TILES_CACHE.stream().allMatch(x -> x.getTileValue() == 1)) {
+                return currentTurnValue == 2 ? 2 : 1;
+            }
         }
-
-        if (GET_TILES_PLAYER_CACHE.size() == getNumColumns()) {
-            GET_TILES_PLAYER_CACHE.removeIf(x -> x.getTileValue() != 0); // leave only empty tiles
-            return GET_TILES_PLAYER_CACHE.size() == 1; // valid if the opponent can win by playing this tile
-        }
-
-        return false;
+        return 0;
     }
 }
