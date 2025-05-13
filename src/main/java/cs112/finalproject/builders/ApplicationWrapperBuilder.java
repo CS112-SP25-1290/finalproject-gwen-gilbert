@@ -36,7 +36,7 @@ public class ApplicationWrapperBuilder implements Builder<Region> {
         StackPane footerWrapper = new StackPane();
         SceneUtils.bindSize(footerWrapper, pane, 0, 12);
 
-        footer = SceneUtils.newLabel("Footer");
+        footer = SceneUtils.newLabel(SceneUtils.MAIN_FOOTER);
         SceneUtils.bindSizePref(footer, footerWrapper, 0, 0);
         footer.textAlignmentProperty().setValue(TextAlignment.CENTER);
         footerWrapper.getChildren().add(footer);

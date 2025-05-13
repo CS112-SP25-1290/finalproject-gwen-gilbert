@@ -23,7 +23,8 @@ public abstract class MiniGameBuilder extends SceneBuilder {
     protected Label statsLabel;
     protected Button endGameButton;
     protected Random Rand;
-    protected IntegerProperty userWins;
+    protected String START_MENU_FOOTER;
+    protected IntegerProperty userWins; // stores times user has won, has built-in listener for stats screen
     protected IntegerProperty computerWins;
     protected boolean playerTurn;
     protected boolean gameHasTied;
@@ -127,6 +128,7 @@ public abstract class MiniGameBuilder extends SceneBuilder {
     /** Sets the active window to this minigame's start menu screen. */
     public void switchToStartMenu() {
         SceneController.setActiveWindow(this.StartMenuRegion);
+        SceneController.getWrapper().setFooter(START_MENU_FOOTER);
         if (statsLabel != null) {
             statsLabel.setText("Player wins: " + userWins + "\nComputer wins: " + computerWins);
         }

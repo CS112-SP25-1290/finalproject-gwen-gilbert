@@ -21,6 +21,9 @@ public class SceneUtils {
     public static final String TIC_TAC_TOE_EMPTY = "file:./src/main/resources/cs112/finalproject/ticTacToe_empty.png";
     public static final String TIC_TAC_TOE_X = "file:./src/main/resources/cs112/finalproject/ticTacToe_x.png";
     public static final String TIC_TAC_TOE_O = "file:./src/main/resources/cs112/finalproject/ticTacToe_o.png";
+    public static final String MAIN_FOOTER = "Pick a game to play!";
+    public static final String CHOMP_FOOTER = "Take turns taking bites out of a chocolate bar!\nThe top-left piece is poisoned though, so don't eat it or you'll lose!";
+    public static final String TIC_TAC_TOE_FOOTER = "Take turns playing X's or O's onto the board!\nFirst to complete a full row wins!";
 
     /**
      * Sets a standard alignment and style for Buttons and Labels.
@@ -86,9 +89,9 @@ public class SceneUtils {
     /**
      * Shortcut method for binding the given scene element's preferred size properties.
      * @param sceneElem The scene element whose size is being bound.
-     * @param parent The parent Region that the labelOrButton is being bound to.
-     * @param wDiv Integer divisor for labelOrButton's prefWidth. Values less than 2 are ignored.
-     * @param hDiv Integer divisor for labelOrButton's prefHeight. Values less than 2 are ignored.
+     * @param parent The parent Region that the sceneElem is being bound to.
+     * @param wDiv Integer divisor for sceneElem's prefWidth. Values less than 2 are ignored.
+     * @param hDiv Integer divisor for sceneElem's prefHeight. Values less than 2 are ignored.
      */
     public static void bindSize(Region sceneElem, Region parent, int wDiv, int hDiv) {
         if (wDiv > 1) {
@@ -102,9 +105,9 @@ public class SceneUtils {
      * Shortcut method for binding the given scene element's preferred size properties.
      * Binds using the parent's preferred size properties instead of its actual size properties.
      * @param sceneElem The scene element whose size is being bound.
-     * @param parent The parent Region that the labelOrButton is being bound to.
-     * @param wDiv Integer divisor for labelOrButton's prefWidth. Values less than 2 are ignored.
-     * @param hDiv Integer divisor for labelOrButton's prefHeight. Values less than 2 are ignored.
+     * @param parent The parent Region that the sceneElem is being bound to.
+     * @param wDiv Integer divisor for sceneElem's prefWidth. Values less than 2 are ignored.
+     * @param hDiv Integer divisor for sceneElem's prefHeight. Values less than 2 are ignored.
      */
     public static void bindSizePref(Region sceneElem, Region parent, int wDiv, int hDiv) {
         if (wDiv > 0) {
@@ -117,17 +120,9 @@ public class SceneUtils {
     /**
      * Shortcut method for calling bindSize with a default wDiv and hDiv.
      * @param sceneElem The scene element whose size is being bound.
-     * @param parent The parent Region that the labelOrButton is being bound to.
+     * @param parent The parent Region that the sceneElem is being bound to.
      */
     public static void bindSize(Region sceneElem, Region parent) {
         bindSize(sceneElem, parent, 8, 12);
-    }
-    /**
-     * Shortcut method for calling bindSizePref with a default wDiv and hDiv.
-     * @param sceneElem The scene element whose size is being bound.
-     * @param parent The parent Region that the labelOrButton is being bound to.
-     */
-    public static void bindSizePref(Region sceneElem, Region parent) {
-        bindSizePref(sceneElem, parent, 8, 8);
     }
 }

@@ -27,6 +27,7 @@ public class TicTacToeGame extends BoardGameBuilder {
         TILE_X = new Image(SceneUtils.TIC_TAC_TOE_X);
         TILE_O = new Image(SceneUtils.TIC_TAC_TOE_O);
         headerImage = new Image(SceneUtils.TIC_TAC_TOE_LOGO_PATH);
+        START_MENU_FOOTER = SceneUtils.TIC_TAC_TOE_FOOTER;
     }
     public TicTacToeGame() {
         this(3, 3);

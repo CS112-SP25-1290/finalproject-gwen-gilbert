@@ -15,6 +15,7 @@ public class ChompGame extends BoardGameBuilder {
         DEFAULT_TILE_IMAGE = new Image(SceneUtils.CHOMP_TILE_FULL);
         EMPTY_TILE = new Image(SceneUtils.CHOMP_TILE_EMPTY);
         POISON_TILE = SceneUtils.newImageView(new Image(SceneUtils.CHOMP_TILE_POISON));
+        START_MENU_FOOTER = SceneUtils.CHOMP_FOOTER;
     }
 
     public ChompGame() {

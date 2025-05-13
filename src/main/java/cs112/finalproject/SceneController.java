@@ -16,14 +16,17 @@ public class SceneController {
     public static ApplicationWrapperBuilder getWrapper() { return wrapper; }
     public static void switchToMainMenu() {
         wrapper.setHeader(wrapper.getGamesLogo());
+        wrapper.setFooter(SceneUtils.MAIN_FOOTER);
         SceneController.setActiveWindow(mainMenu.getSceneRegion());
     }
     public static void switchToChompGame() {
         wrapper.setHeader(chompGame.getHeaderImage());
+        wrapper.setFooter(SceneUtils.CHOMP_FOOTER);
         chompGame.switchToStartMenu();
     }
     public static void switchToTicTacToe() {
         wrapper.setHeader(ticTacToe.getHeaderImage());
+        wrapper.setFooter(SceneUtils.TIC_TAC_TOE_FOOTER);
         ticTacToe.switchToStartMenu();
     }
 

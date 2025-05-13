@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -72,6 +73,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             VBox column = new VBox();
             for (int j = 0; j < numRows; j++) {
                 board[i][j] = new BoardTile(i, j);
+                //SceneUtils.bindSize(board[i][j].getTile(), SceneRegion, 2, 2);
                 column.getChildren().add(board[i][j].getTile());
             }
             boardWrapper.getChildren().add(column);
@@ -80,7 +82,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
 
     @Override
     public void startGame() {
-        generateBoard();
+        generateBoard(); // generate board before starting the game
         super.startGame();
     }
 
@@ -111,6 +113,11 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         return selectableTiles.get(this.Rand.nextInt(0, selectableTiles.size()));
     }
 
+    /**
+     * Method called whenever a BoardTile is selected.
+     * Controls turns and game ending.
+     * @param tile The BoardTile that has been selected.
+     */
     protected void onTileSelected(BoardTile tile) {
         System.out.println("Player:" + playerTurn + " | " + tile.toString());
 
@@ -123,6 +130,11 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         }
     }
 
+    /**
+     * Gets a list of BoardTile that can be selected by the computer.
+     * Selectable BoardTiles are those with tileValue 0.
+     * @return A list of BoardTile that can be selected by the computer.
+     */
     protected ArrayList<BoardTile> getValidSelectableTiles() {
         ArrayList<BoardTile> selectableTiles = new ArrayList<>();
         for (int i = 0; i < board.length; i++) {
