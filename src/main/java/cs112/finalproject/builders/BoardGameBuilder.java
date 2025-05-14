@@ -2,6 +2,7 @@ package cs112.finalproject.builders;
 
 import cs112.finalproject.BoardTileNotFoundException;
 import cs112.finalproject.SceneUtils;
+import javafx.animation.AnimationTimer;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -81,7 +82,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
     }
 
     @Override
-    public void startGame() {
+    public void startGame() throws InterruptedException {
         generateBoard(); // generate board before starting the game
         super.startGame();
     }
@@ -92,11 +93,17 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
     }
 
     @Override
-    public void onComputerTurn() {
+    public void onComputerTurn() throws InterruptedException {
         disableBoardTiles(true);
         onTileSelected(onComputerSelectTile());
     }
 
+
+    /**
+     * Enables or disables the buttons making up the board.
+     * Will only affect board tile buttons that can be played.
+     * @param disable If true, user interaction will be disabled for the board. If false, it is enabled.
+     */
     private void disableBoardTiles(boolean disable) {
         for (BoardTile[] boardTiles : board) {
             for (int j = 0; j < board[0].length; j++) {
@@ -118,7 +125,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
      * Controls turns and game ending.
      * @param tile The BoardTile that has been selected.
      */
-    protected void onTileSelected(BoardTile tile) {
+    protected void onTileSelected(BoardTile tile) throws InterruptedException {
         System.out.println("Player:" + playerTurn + " | " + tile.toString());
 
         if (gameHasEnded()) {
@@ -219,7 +226,13 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         stats.textProperty().bind(Bindings.format("Player Wins: %d%nL@@KER Wins: %d%n", userWins, computerWins));
         SceneUtils.bindSize(stats, retval);
 
-        Button playButton = SceneUtils.newButton("Start", ev -> initialiseGame());
+        Button playButton = SceneUtils.newButton("Start", ev -> {
+            try {
+                initialiseGame();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
         SceneUtils.bindSize(playButton, retval);
         Button exitButton = SceneUtils.newButton("Back To Main Menu", onExitEvent);
         SceneUtils.bindSize(exitButton, retval, 0 ,12);
@@ -332,7 +345,13 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             else {
                 position = BoardTilePosition.BODY;
             }
-            this.tile = SceneUtils.newButton(null, ev -> onTileSelected(this));
+            this.tile = SceneUtils.newButton(null, ev -> {
+                try {
+                    onTileSelected(this);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             if (DEFAULT_TILE_IMAGE != null) {
                 this.tile.setGraphic(SceneUtils.newImageView(DEFAULT_TILE_IMAGE));
             }

@@ -23,7 +23,7 @@ public class TicTacToeGame extends BoardGameBuilder {
     private final Image TILE_X;
     private final Image TILE_O;
     private final ArrayList<BoardTile> GET_TILES_CACHE = new ArrayList<>();
-    private final ArrayList<BoardTile> GET_TILES_PLAYER_CACHE = new ArrayList<>();
+
     public TicTacToeGame(int columns, int rows) {
         super(columns, rows);
         DEFAULT_TILE_IMAGE = new Image(SceneUtils.TIC_TAC_TOE_EMPTY);
@@ -37,7 +37,7 @@ public class TicTacToeGame extends BoardGameBuilder {
     }
 
     @Override
-    public void startGame() {
+    public void startGame() throws InterruptedException {
         playerIsX = playerTurn;
         currentTurnValue = playerTurn ? 1 : 2;
         lineCompleted = false;
@@ -47,7 +47,7 @@ public class TicTacToeGame extends BoardGameBuilder {
     @Override
     protected boolean gameHasEnded() { return lineCompleted || gameHasTied; }
     @Override
-    public void changePlayerTurn(boolean playerTurn) {
+    public void changePlayerTurn(boolean playerTurn) throws InterruptedException {
         currentTurnValue = playerTurn ? 1 : 2;
         super.changePlayerTurn(playerTurn);
     }
@@ -56,7 +56,7 @@ public class TicTacToeGame extends BoardGameBuilder {
         return super.buildBoardSizeRegion(parent, true);
     }
     @Override
-    protected void onTileSelected(BoardTile tile) {
+    protected void onTileSelected(BoardTile tile) throws InterruptedException {
         tile.getTile().setGraphic(SceneUtils.newImageView(playerTurn ? (playerIsX? TILE_X : TILE_O) : (playerIsX? TILE_O : TILE_X)));
         tile.getTile().setDisable(true);
         tile.setTileValue(currentTurnValue);
@@ -72,46 +72,41 @@ public class TicTacToeGame extends BoardGameBuilder {
     @Override
     protected ArrayList<BoardTile> getValidSelectableTiles() {
         ArrayList<BoardTile> selectableTiles = super.getValidSelectableTiles();
-        ArrayList<BoardTile> cacheSelectableTiles = new ArrayList<>();
         ArrayList<Integer> validationValues = new ArrayList<>();
         for (BoardTile tile : selectableTiles) {
             int i = checkTile(tile, false);
-            if (i != 0) {
-                validationValues.add(i);
-            }
+            validationValues.add(i);
         }
 
-        // if any selectable spaces can complete a line
+        // if any selectable of the spaces can complete a line,
+        // move to it
         if (validationValues.contains(1) || validationValues.contains(2)) {
+            ArrayList<BoardTile> cacheSelectableTiles = new ArrayList<>();
             boolean computerCanWin = validationValues.contains(2);
             for (int i = 0; i < validationValues.size(); i++) {
                 int val = validationValues.get(i);
-                if (val != 0) {
-                    if (computerCanWin && val != currentTurnValue) {
-                        continue;
-                    }
+                if (val == 2 && computerCanWin) {
+                    cacheSelectableTiles.add(selectableTiles.get(i));
+                }
+                else if (val == 1 && !computerCanWin) {
                     cacheSelectableTiles.add(selectableTiles.get(i));
                 }
             }
             return cacheSelectableTiles;
         }
 
-        System.out.println("Default random: " + selectableTiles.size());
         return selectableTiles;
     }
 
     private int checkTile(BoardTile selectedTile, boolean checkForCompletedLine) {
         switch (selectedTile.getTilePosition()) {
             case CORNER -> {
-                //System.out.println("CORNER");
                 return verifyCornerTile(selectedTile.getColumn(), selectedTile.getRow(), checkForCompletedLine);
             }
             case EDGE -> {
-                //System.out.println("EDGE");
                 return verifyEdgeTile(selectedTile.getColumn(), selectedTile.getRow(), checkForCompletedLine);
             }
             default -> {
-                //System.out.println("BODY");
                 return verifyBodyTile(selectedTile.getColumn(), selectedTile.getRow(), checkForCompletedLine);
             }
         }
@@ -136,7 +131,6 @@ public class TicTacToeGame extends BoardGameBuilder {
         else { // start with the top-right tile
             getTilesDiagonalRecursive(false, getNumColumns() - 1, 0);
         }
-        //System.out.println("getDiag: " + GET_TILES_CACHE.size());
     }
     /**
      * A recursive method that checks individual BoardTiles to see if they make up a valid diagonal line.
@@ -262,12 +256,14 @@ public class TicTacToeGame extends BoardGameBuilder {
         if (GET_TILES_CACHE.removeIf(x -> x.getTileValue() == 0)
                 && GET_TILES_CACHE.size() == getNumColumns() - 1) {
 
-            // return if all the occupied tiles belong to the same player
+            // if the player will win on their next turn
             if (GET_TILES_CACHE.stream().allMatch(x -> x.getTileValue() == 1)) {
-                return currentTurnValue == 1 ? 2 : 1;
+                return 1;
             }
-            if (GET_TILES_CACHE.stream().allMatch(x -> x.getTileValue() == 1)) {
-                return currentTurnValue == 2 ? 2 : 1;
+
+            // if the computer can win this turn
+            if (GET_TILES_CACHE.stream().allMatch(x -> x.getTileValue() == 2)) {
+                return 2;
             }
         }
         return 0;

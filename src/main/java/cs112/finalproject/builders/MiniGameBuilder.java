@@ -51,7 +51,7 @@ public abstract class MiniGameBuilder extends SceneBuilder {
     public Image getHeaderImage() { return headerImage; }
 
     /** Sets the active window to this minigame's game screen and initialises first turn data. */
-    public void initialiseGame() {
+    public void initialiseGame() throws InterruptedException {
         gameHasTied = false;
         playerTurn = (firstTurnPlayer == StartingPlayer.RANDOM ? this.Rand.nextBoolean() : firstTurnPlayer == StartingPlayer.USER);
         SceneController.setActiveWindow(this.build());
@@ -64,7 +64,7 @@ public abstract class MiniGameBuilder extends SceneBuilder {
 
         startGame();
     }
-    protected void startGame() {
+    protected void startGame() throws InterruptedException {
         if (playerTurn) {
             onPlayerTurn();
         }
@@ -99,9 +99,9 @@ public abstract class MiniGameBuilder extends SceneBuilder {
      */
     protected abstract boolean gameHasEnded();
     protected abstract void onPlayerTurn();
-    protected abstract void onComputerTurn();
+    protected abstract void onComputerTurn() throws InterruptedException;
 
-    protected void changePlayerTurn(boolean playerTurn) {
+    protected void changePlayerTurn(boolean playerTurn) throws InterruptedException {
         this.playerTurn = playerTurn;
         if (playerTurn) {
             SceneController.getWrapper().setFooter("Your turn!");
@@ -109,6 +109,7 @@ public abstract class MiniGameBuilder extends SceneBuilder {
         }
         else {
             SceneController.getWrapper().setFooter("L@@KER's turn!");
+            Thread.sleep(1000);// TODO
             onComputerTurn();
         }
     }

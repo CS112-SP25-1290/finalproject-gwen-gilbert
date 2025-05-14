@@ -33,7 +33,7 @@ public class ChompGame extends BoardGameBuilder {
         return false;
     }
     @Override
-    protected void onTileSelected(BoardTile tile) {
+    protected void onTileSelected(BoardTile tile) throws InterruptedException {
         int col = tile.getColumn();
         int row = tile.getRow();
 
