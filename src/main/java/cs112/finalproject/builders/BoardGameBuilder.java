@@ -76,7 +76,6 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             VBox column = new VBox();
             for (int j = 0; j < numRows; j++) {
                 board[i][j] = new BoardTile(i, j);
-                //SceneUtils.bindSize(board[i][j].getTile(), SceneRegion, 2, 2);
                 column.getChildren().add(board[i][j].getTile());
             }
             boardWrapper.getChildren().add(column);
@@ -129,7 +128,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             @Override
             protected Void call() {
                 try { Thread.sleep(millis); }
-                catch (InterruptedException e) { }
+                catch (InterruptedException ignored) { }
                 return null;
             }
         };
@@ -314,6 +313,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         SceneUtils.bindSize(columnField, box, 0, 12);
         box.getChildren().addAll(label, columnField);
 
+        // if the board can be a non-square rectangle, let the player modify both column and row sizes
         if (!forceSquareBoard) {
             Label label2 = SceneUtils.newLabel(" X ");
             SceneUtils.bindSize(label2, box, 0, 12);
@@ -353,8 +353,8 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         private final int column;
         private final int row;
         private final BoardTilePosition position;
-        private int tileValue;
-        private final Button tile;
+        private int tileValue; // 0 means the tile can be selected
+        private final Button tile; // button associated with the current tile
 
         public BoardTile(int column, int row, int tileValue) {
             this.column = column;
@@ -433,6 +433,8 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             }
             return false;
         }
+
+        // For tracking where on the board a tile is located
         public enum BoardTilePosition {
             CORNER,
             EDGE,
