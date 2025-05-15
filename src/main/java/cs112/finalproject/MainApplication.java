@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 public class MainApplication extends Application {
     // define a standard text size for the program.
-    public static SimpleDoubleProperty fontSize = new SimpleDoubleProperty(12);
+    public static SimpleDoubleProperty fontSize = new SimpleDoubleProperty(14);
     @Override
     public void start(Stage stage) {
         SceneController.init(stage); // initialise the SceneController and all mini-programs and scenes.
