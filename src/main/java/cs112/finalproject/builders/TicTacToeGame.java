@@ -47,7 +47,7 @@ public class TicTacToeGame extends BoardGameBuilder {
     @Override
     protected boolean gameHasEnded() { return lineCompleted || gameHasTied; }
     @Override
-    public void changePlayerTurn(boolean playerTurn) throws InterruptedException {
+    public void changePlayerTurn(boolean playerTurn) {
         currentTurnValue = playerTurn ? 1 : 2;
         super.changePlayerTurn(playerTurn);
     }
@@ -56,7 +56,7 @@ public class TicTacToeGame extends BoardGameBuilder {
         return super.buildBoardSizeRegion(parent, true);
     }
     @Override
-    protected void onTileSelected(BoardTile tile) throws InterruptedException {
+    protected void onTileSelected(BoardTile tile) {
         tile.getTile().setGraphic(SceneUtils.newImageView(playerTurn ? (playerIsX? TILE_X : TILE_O) : (playerIsX? TILE_O : TILE_X)));
         tile.getTile().setDisable(true);
         tile.setTileValue(currentTurnValue);

@@ -12,13 +12,13 @@ import javafx.util.Builder;
 
 /**
  * StageBuilder for a Region that will wrap the entire Scene.
- * Changing to different Regions is done via this class.
+ * Scene changes for the application will be done via this class.
  */
 public class ApplicationWrapperBuilder implements Builder<Region> {
-    public BorderPane pane;
-    private ImageView header;
-    private Image gamesHeader;
-    private Label footer;
+    public BorderPane pane; // main scene element, controls scene changes
+    private ImageView header; // image shown at top of program
+    private Image gamesHeader; // default image when on the main menu
+    private Label footer; // text shown at bottom of program
     @Override
     public Region build() {
         pane = new BorderPane();
@@ -47,8 +47,23 @@ public class ApplicationWrapperBuilder implements Builder<Region> {
     }
 
     public Image getGamesLogo() { return gamesHeader; }
+
+    /**
+     * Sets the application's header to the given image.
+     * @param image The image to display at the top of the program.
+     */
     public void setHeader(Image image) { header.setImage(image); }
+
+    /**
+     * Sets the text displayed at the bottom of the application.
+     * @param text The text to display in the footer.
+     */
     public void setFooter(String text) { footer.setText(text); }
+
+    /**
+     * Changes the element/scene currently displayed by the program.
+     * @param node The scene to switch to.
+     */
     public void setCenter(Node node) {
         pane.setCenter(node);
     }

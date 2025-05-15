@@ -6,6 +6,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -99,9 +100,9 @@ public abstract class MiniGameBuilder extends SceneBuilder {
      */
     protected abstract boolean gameHasEnded();
     protected abstract void onPlayerTurn();
-    protected abstract void onComputerTurn() throws InterruptedException;
+    protected abstract void onComputerTurn();
 
-    protected void changePlayerTurn(boolean playerTurn) throws InterruptedException {
+    protected void changePlayerTurn(boolean playerTurn) {
         this.playerTurn = playerTurn;
         if (playerTurn) {
             SceneController.getWrapper().setFooter("Your turn!");
@@ -109,7 +110,6 @@ public abstract class MiniGameBuilder extends SceneBuilder {
         }
         else {
             SceneController.getWrapper().setFooter("L@@KER's turn!");
-            Thread.sleep(1000);// TODO
             onComputerTurn();
         }
     }

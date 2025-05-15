@@ -24,8 +24,9 @@ public class ChompGame extends BoardGameBuilder {
 
     @Override
     protected boolean gameHasEnded() {
+        // if the top-left tile has been eaten
         if (board[0][0].getTileValue() == 1) {
-            // the base assumes a player wins on their turn, so we invert playerTurn
+            // the base class assumes a player wins on their turn, so we invert playerTurn
             // since Chomp ends when someone loses on their turn
             playerTurn = !playerTurn;
             return true;
@@ -33,17 +34,19 @@ public class ChompGame extends BoardGameBuilder {
         return false;
     }
     @Override
-    protected void onTileSelected(BoardTile tile) throws InterruptedException {
+    protected void onTileSelected(BoardTile tile) {
         int col = tile.getColumn();
         int row = tile.getRow();
 
         // when a tile is selected, remove it from list of selectable tiles
         // and change graphic to show it's been eaten/is empty
+        // remove all tiles to the right of the selected tile
+        // and all tiles below the selected tile
         for (int i = col; i < getNumColumns(); i++) {
             for (int j = row; j < getNumRows(); j++) {
                 board[i][j].getTile().setGraphic(SceneUtils.newImageView(EMPTY_TILE));
                 board[i][j].getTile().setDisable(true);
-                board[i][j].setTileValue(1);
+                board[i][j].setTileValue(1); // eaten tiles have a value of 1 to prevent further selection
             }
         }
 
@@ -54,7 +57,8 @@ public class ChompGame extends BoardGameBuilder {
     protected ArrayList<BoardTile> getValidSelectableTiles() {
         ArrayList<BoardTile> selectableTiles = super.getValidSelectableTiles();
         if (selectableTiles.size() > 1) {
-            selectableTiles.remove(0); // computer will never select the top-left tile unless it's the only option
+            // computer will never select the top-left tile unless it's the only option
+            selectableTiles.remove(0);
         }
         return selectableTiles;
     }
@@ -62,6 +66,6 @@ public class ChompGame extends BoardGameBuilder {
     @Override
     protected void generateBoard() {
         super.generateBoard();
-        board[0][0].getTile().setGraphic(POISON_TILE); // top-left tile is poisoned
+        board[0][0].getTile().setGraphic(POISON_TILE); // top-left tile is poisoned and should indicate that
     }
 }

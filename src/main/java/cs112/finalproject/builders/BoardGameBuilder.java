@@ -4,6 +4,7 @@ import cs112.finalproject.BoardTileNotFoundException;
 import cs112.finalproject.SceneUtils;
 import javafx.animation.AnimationTimer;
 import javafx.beans.binding.Bindings;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -17,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public abstract class BoardGameBuilder extends MiniGameBuilder {
     public BoardTile[][] board;
@@ -93,11 +95,47 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
     }
 
     @Override
-    public void onComputerTurn() throws InterruptedException {
+    public void onComputerTurn() {
         disableBoardTiles(true);
-        onTileSelected(onComputerSelectTile());
+
+        // delay the computer's move so the player can process when their turn is over
+        delay(900, () -> onTileSelected(onComputerSelectTile()));
+    }
+    /**
+     * Method called whenever a BoardTile is selected.
+     * Controls turns and game ending.
+     * @param tile The BoardTile that has been selected.
+     */
+    protected void onTileSelected(BoardTile tile) {
+        System.out.println("Player:" + playerTurn + " | " + tile.toString());
+
+        if (gameHasEnded()) {
+            disableBoardTiles(true); // prevent accidental user input
+            endGame();
+        }
+        else {
+            changePlayerTurn(!playerTurn);
+        }
     }
 
+    /**
+     * Runs the given Runnable after calling Thread.sleep for the given length of time.
+     * Retrieved from: https://stackoverflow.com/questions/26454149/make-javafx-wait-and-continue-with-code
+     * @param millis How length of time the threat should sleep in milliseconds.
+     * @param continuation The Runnable to call after the Task is completed.
+     */
+    private void delay(long millis, Runnable continuation) {
+        Task<Void> sleeper = new Task<>() {
+            @Override
+            protected Void call() {
+                try { Thread.sleep(millis); }
+                catch (InterruptedException e) { }
+                return null;
+            }
+        };
+        sleeper.setOnSucceeded(event -> continuation.run());
+        new Thread(sleeper).start();
+    }
 
     /**
      * Enables or disables the buttons making up the board.
@@ -114,32 +152,18 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
         }
     }
 
+    /**
+     * Computer will select a random Tile from a list of valid selectable Tiles for its move.
+     * @return The BoardTile the computer selected.
+     */
     private BoardTile onComputerSelectTile() {
-        //return getBoardTile(0, 1);
         ArrayList<BoardTile> selectableTiles = getValidSelectableTiles();
         return selectableTiles.get(this.Rand.nextInt(0, selectableTiles.size()));
     }
-
     /**
-     * Method called whenever a BoardTile is selected.
-     * Controls turns and game ending.
-     * @param tile The BoardTile that has been selected.
-     */
-    protected void onTileSelected(BoardTile tile) throws InterruptedException {
-        System.out.println("Player:" + playerTurn + " | " + tile.toString());
-
-        if (gameHasEnded()) {
-            disableBoardTiles(true);
-            endGame();
-        }
-        else {
-            changePlayerTurn(!playerTurn);
-        }
-    }
-
-    /**
-     * Gets a list of BoardTile that can be selected by the computer.
+     * Gets a list of BoardTiles that can be selected by the computer.
      * Selectable BoardTiles are those with tileValue 0.
+     * This method should be overridden to change the computer AI.
      * @return A list of BoardTile that can be selected by the computer.
      */
     protected ArrayList<BoardTile> getValidSelectableTiles() {
@@ -200,6 +224,8 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
 
     @Override
     public Region buildScene() {
+        // board games have a generic scene template of a VBox wrapping an HBox
+        // the HBox is the main wrapper, and will contain the board elements
         VBox retval = SceneUtils.newVBox();
         retval.setSpacing(50);
         initialiseEndButton(retval);
@@ -345,13 +371,7 @@ public abstract class BoardGameBuilder extends MiniGameBuilder {
             else {
                 position = BoardTilePosition.BODY;
             }
-            this.tile = SceneUtils.newButton(null, ev -> {
-                try {
-                    onTileSelected(this);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            this.tile = SceneUtils.newButton(null, ev -> onTileSelected(this));
             if (DEFAULT_TILE_IMAGE != null) {
                 this.tile.setGraphic(SceneUtils.newImageView(DEFAULT_TILE_IMAGE));
             }

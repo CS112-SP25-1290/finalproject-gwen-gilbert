@@ -11,6 +11,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+/**
+ * Help class containing methods and data that is shared across different Scenes or is constant across the program.
+ */
 public class SceneUtils {
     public static final String GAMES_LOGO_PATH = "file:./src/main/resources/cs112/finalproject/gamesLogo.png";
     public static final String CHOMP_LOGO_PATH = "file:./src/main/resources/cs112/finalproject/chompLogo.png";

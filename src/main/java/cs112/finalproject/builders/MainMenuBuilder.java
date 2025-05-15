@@ -9,7 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 /**
- * Builds the main Region that wraps all other scenes, used to streamline scene changes
+ * SceneBuilder for constructing the main menu.
  */
 public class MainMenuBuilder extends SceneBuilder {
     public MainMenuBuilder(EventHandler<ActionEvent> event) {
