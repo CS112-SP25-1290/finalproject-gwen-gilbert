@@ -72,27 +72,29 @@ public class TicTacToeGame extends BoardGameBuilder {
     @Override
     protected ArrayList<BoardTile> getValidSelectableTiles() {
         ArrayList<BoardTile> selectableTiles = super.getValidSelectableTiles();
-        ArrayList<Integer> validationValues = new ArrayList<>();
-        for (BoardTile tile : selectableTiles) {
-            int i = checkTile(tile, false);
-            validationValues.add(i);
-        }
-
-        // if any selectable of the spaces can complete a line,
-        // move to it
-        if (validationValues.contains(1) || validationValues.contains(2)) {
-            ArrayList<BoardTile> cacheSelectableTiles = new ArrayList<>();
-            boolean computerCanWin = validationValues.contains(2);
-            for (int i = 0; i < validationValues.size(); i++) {
-                int val = validationValues.get(i);
-                if (val == 2 && computerCanWin) {
-                    cacheSelectableTiles.add(selectableTiles.get(i));
-                }
-                else if (val == 1 && !computerCanWin) {
-                    cacheSelectableTiles.add(selectableTiles.get(i));
-                }
+        if (Rand.nextInt(5) < 4) {
+            ArrayList<Integer> validationValues = new ArrayList<>();
+            for (BoardTile tile : selectableTiles) {
+                int i = checkTile(tile, false);
+                validationValues.add(i);
             }
-            return cacheSelectableTiles;
+
+            // if any selectable of the spaces can complete a line,
+            // move to it
+            if (validationValues.contains(1) || validationValues.contains(2)) {
+                ArrayList<BoardTile> cacheSelectableTiles = new ArrayList<>();
+                boolean computerCanWin = validationValues.contains(2);
+                for (int i = 0; i < validationValues.size(); i++) {
+                    int val = validationValues.get(i);
+                    if (val == 2 && computerCanWin) {
+                        cacheSelectableTiles.add(selectableTiles.get(i));
+                    }
+                    else if (val == 1 && !computerCanWin) {
+                        cacheSelectableTiles.add(selectableTiles.get(i));
+                    }
+                }
+                return cacheSelectableTiles;
+            }
         }
 
         return selectableTiles;
